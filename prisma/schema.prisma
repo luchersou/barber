@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id           String        @id @default(cuid())
+  name         String
+  phone        String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+}
+
+model Barber {
+  id           String        @id @default(cuid())
+  name         String
+  phone        String?
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+}
+
+model Service {
+  id           String        @id @default(cuid())
+  name         String
+  price        Decimal
+  duration     Int           
+  active       Boolean       @default(true)
+  appointments AppointmentService[]
+}
+
+model Appointment {
+  id         String               @id @default(cuid())
+  clientId   String
+  barberId   String
+  date       DateTime
+  status     AppointmentStatus    @default(SCHEDULED)
+  totalPrice Decimal
+  notes      String?
+  updatedAt  DateTime
+  createdAt  DateTime             @default(now())
+  client     Client               @relation(fields: [clientId], references: [id])
+  barber     Barber               @relation(fields: [barberId], references: [id])
+  services   AppointmentService[]
+}
+
+model AppointmentService {
+  appointmentId String
+  serviceId     String
+  price         Decimal  
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  service       Service     @relation(fields: [serviceId], references: [id])
+  @@id([appointmentId, serviceId])
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  COMPLETED  
+  CANCELLED
+  NO_SHOW
+}
