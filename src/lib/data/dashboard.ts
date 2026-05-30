@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { DashboardStats, RevenueChart, TopBarber, TopService } from "@/types/dashboard";
 
-export async function getDashboardStats(userId: string) {
+export async function getDashboardStats(userId: string): Promise<DashboardStats> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -17,7 +18,7 @@ export async function getDashboardStats(userId: string) {
 
       prisma.appointment.aggregate({
         where: {
-          status: "COMPLETED",
+          status: AppointmentStatus.COMPLETED,
           createdAt: { gte: startOfMonth },
         },
         _sum: { totalPrice: true },
@@ -25,7 +26,7 @@ export async function getDashboardStats(userId: string) {
 
       prisma.appointment.count({
         where: {
-          status: "COMPLETED",
+          status: AppointmentStatus.COMPLETED,
           createdAt: { gte: startOfMonth },
         },
       }),
@@ -34,19 +35,19 @@ export async function getDashboardStats(userId: string) {
   return {
     totalClients,
     monthAppointments,
-    monthRevenue: monthRevenue._sum.totalPrice ?? 0,
+    monthRevenue: Number(monthRevenue._sum.totalPrice ?? 0),
     completedThisMonth,
   };
 }
 
-export async function getRevenueChart(userId: string) {
+export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
   thirtyDaysAgo.setDate(now.getDate() - 30);
 
   const appointments = await prisma.appointment.findMany({
     where: {
-      status: "COMPLETED",
+      status: AppointmentStatus.COMPLETED,
       date: { gte: thirtyDaysAgo },
     },
     select: {
@@ -83,13 +84,13 @@ export async function getAppointmentsByStatus(userId: string) {
     _count: { status: true },
   });
 
-  return result.map((item: { status: AppointmentStatus; _count: { status: number } }) => ({
+  return result.map((item) => ({
     status: item.status,
     value: item._count.status,
   }));
 }
 
-export async function getTopServices(userId: string) {
+export async function getTopServices(userId: string): Promise<TopService[]> {
   const result = await prisma.appointmentService.groupBy({
     by: ["serviceId"],
     _count: { serviceId: true },
@@ -97,25 +98,25 @@ export async function getTopServices(userId: string) {
     take: 5,
   });
 
-  const serviceIds = result.map((item: { serviceId: string; _count: { serviceId: number } }) => item.serviceId);
+  const serviceIds = result.map((item) => item.serviceId);
 
   const services = await prisma.service.findMany({
     where: { id: { in: serviceIds } },
     select: { id: true, name: true },
   });
 
-  const serviceMap = Object.fromEntries(services.map((s: { id: string; name: string }) => [s.id, s.name]));
+  const serviceMap = Object.fromEntries(services.map((s) => [s.id, s.name]));
 
-  return result.map((item: { serviceId: string; _count: { serviceId: number } }) => ({
+  return result.map((item) => ({
     name: serviceMap[item.serviceId] ?? item.serviceId,
     count: item._count.serviceId,
   }));
 }
 
-export async function getTopBarbers(userId: string) {
+export async function getTopBarbers(userId: string): Promise<TopBarber[]> {
   const result = await prisma.appointment.groupBy({
     by: ["barberId"],
-    where: { status: "COMPLETED" },
+    where: { status: AppointmentStatus.COMPLETED },
     _sum: { totalPrice: true },
     orderBy: { _sum: { totalPrice: "desc" } },
     take: 5,
