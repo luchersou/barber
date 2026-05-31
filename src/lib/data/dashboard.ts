@@ -95,6 +95,11 @@ export async function getAppointmentsByStatus(userId: string) {
 export async function getTopServices(userId: string): Promise<TopService[]> {
   const result = await prisma.appointmentService.groupBy({
     by: ["serviceId"],
+    where: {
+      appointment: {
+        status: AppointmentStatus.COMPLETED,
+      },
+    },
     _count: { serviceId: true },
     orderBy: { _count: { serviceId: "desc" } },
     take: 5,
