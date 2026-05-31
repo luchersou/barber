@@ -16,6 +16,7 @@ export async function getAppointments(
   const { page = 1, barberId, clientId, startDate, endDate } = params;
 
   const where = {
+    userId,
     ...(barberId && { barberId }),
     ...(clientId && { clientId }),
     ...(startDate || endDate

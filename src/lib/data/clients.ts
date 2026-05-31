@@ -12,6 +12,7 @@ export async function getClients(
   const { page = 1, search } = params;
 
   const where = {
+    userId,
     ...(search && {
       OR: [
         { name: { contains: search, mode: "insensitive" as const } },
@@ -64,6 +65,7 @@ export async function getClients(
 
 export async function getClientsForSelect(userId: string) {
   return prisma.client.findMany({
+    where: { userId },
     orderBy: { name: "asc" },
     select: {
       id: true,
