@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { DashboardStats, RevenueChart, TopBarber, TopService } from "@/types/dashboard";
 
+const REVENUE_CHART_DAYS = 30;
+
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -43,7 +45,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
 export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
   const now = new Date();
   const thirtyDaysAgo = new Date(now);
-  thirtyDaysAgo.setDate(now.getDate() - 30);
+  thirtyDaysAgo.setDate(now.getDate() - REVENUE_CHART_DAYS);
 
   const appointments = await prisma.appointment.findMany({
     where: {
@@ -58,7 +60,7 @@ export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
 
   const revenueMap: Record<string, number> = {};
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < REVENUE_CHART_DAYS; i++) {
     const d = new Date(thirtyDaysAgo);
     d.setDate(thirtyDaysAgo.getDate() + i);
     const key = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
