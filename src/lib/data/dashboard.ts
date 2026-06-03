@@ -101,8 +101,8 @@ export async function getTopServices(userId: string): Promise<TopService[]> {
   const result = await prisma.appointmentService.groupBy({
     by: ["serviceId"],
     where: {
-      userId,
       appointment: {
+        userId,
         status: AppointmentStatus.COMPLETED,
       },
     },
