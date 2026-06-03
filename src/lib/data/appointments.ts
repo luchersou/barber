@@ -22,8 +22,8 @@ export async function getAppointments(
     ...(startDate || endDate
       ? {
           date: {
-            ...(startDate && { gte: new Date(startDate) }),
-            ...(endDate && { lte: new Date(endDate) }),
+            ...(startDate && { gte: new Date(startDate.split("T")[0]) }),
+            ...(endDate && { lte: new Date(endDate.split("T")[0] + "T23:59:59.999Z") }),
           },
         }
       : {}),
