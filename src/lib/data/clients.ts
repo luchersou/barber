@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ClientsResponse, ClientSelect } from "@/types/clients";
 
 const CLIENTS_PER_PAGE = 10;
 
@@ -8,7 +9,7 @@ export async function getClients(
     page?: number;
     search?: string;
   }
-) {
+): Promise<ClientsResponse> {
   const { page = 1, search } = params;
 
   const where = {
@@ -63,7 +64,7 @@ export async function getClients(
   };
 }
 
-export async function getClientsForSelect(userId: string) {
+export async function getClientsForSelect(userId: string): Promise<ClientSelect[]> {
   return prisma.client.findMany({
     where: { userId },
     orderBy: { name: "asc" },
