@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { endOfWeek, isSameDay, isWithinInterval, startOfWeek } from "date-fns";
 
-import { EndHour, StartHour } from "../constants";
+import { EndHour, StartHour } from "@/lib/calendar-constants";
 
 export function useCurrentTimeIndicator(currentDate: Date, view: "day" | "week") {
   const [currentTimePosition, setCurrentTimePosition] = useState<number>(0);
