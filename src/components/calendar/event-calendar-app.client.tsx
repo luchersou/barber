@@ -1,33 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useOptimistic, useTransition } from "react";
 import { EventCalendar, type CalendarEvent } from "./";
+import { ClientSelect } from "@/types/clients";
+import { BarberSelect } from "@/types/barbers";
+import { ServiceSelect } from "@/types/services";
 
 interface EventCalendarAppProps {
   events: CalendarEvent[];
+  clients: ClientSelect[];
+  barbers: BarberSelect[];
+  services: ServiceSelect[];
 }
 
-export function EventCalendarApp({ events: initialEvents }: EventCalendarAppProps) {
-  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
+type CalendarAction =
+  | { type: "add"; event: CalendarEvent }
+  | { type: "update"; event: CalendarEvent }
+  | { type: "delete"; eventId: string };
+
+function eventsReducer(state: CalendarEvent[], action: CalendarAction): CalendarEvent[] {
+  switch (action.type) {
+    case "add":
+      return [...state, action.event];
+    case "update":
+      return state.map((e) => (e.id === action.event.id ? action.event : e));
+    case "delete":
+      return state.filter((e) => e.id !== action.eventId);
+  }
+}
+
+export function EventCalendarApp({
+  events: initialEvents,
+  clients,
+  barbers,
+  services,
+}: EventCalendarAppProps) {
+  const [optimisticEvents, dispatchOptimistic] = useOptimistic(initialEvents, eventsReducer);
+  const [, startTransition] = useTransition();
 
   const handleEventAdd = (event: CalendarEvent) => {
-    setEvents([...events, event]);
+    startTransition(async () => {
+      dispatchOptimistic({ type: "add", event });
+      // TODO: await createAppointment(event)
+    });
   };
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
-    setEvents(events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event)));
+    startTransition(async () => {
+      dispatchOptimistic({ type: "update", event: updatedEvent });
+      // TODO: await updateAppointment(updatedEvent)
+    });
   };
 
   const handleEventDelete = (eventId: string) => {
-    setEvents(events.filter((event) => event.id !== eventId));
+    startTransition(async () => {
+      dispatchOptimistic({ type: "delete", eventId });
+      // TODO: await deleteAppointment(eventId)
+    });
   };
 
   return (
     <EventCalendar
-      events={events}
+      events={optimisticEvents}
       onEventAdd={handleEventAdd}
       onEventUpdate={handleEventUpdate}
       onEventDelete={handleEventDelete}
+      clients={clients}
+      barbers={barbers}
+      services={services}
     />
   );
 }
