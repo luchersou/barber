@@ -19,7 +19,10 @@ import {
   UsersIcon,
   type LucideIcon,
   CalendarCheckIcon,
-  HomeIcon
+  HomeIcon,
+  DollarSignIcon,
+  UserCogIcon,
+  ScissorsIcon
 } from "lucide-react";
 import Link from "next/link";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -50,7 +53,7 @@ type NavItem = {
 
 export const navItems: NavGroup[] = [
   {
-    title: "Menu",
+    title: "Principal",
     items: [
       {
         title: "Início",
@@ -62,23 +65,45 @@ export const navItems: NavGroup[] = [
         href: "/agenda",
         icon: CalendarIcon,
       },
-      {
-        title: "Atendimentos",
-        href: "/atendimentos",
-        icon: CalendarCheckIcon,
-        items: [
-          { title: "Todos", href: "/atendimentos" },
-          { title: "Novo Atendimento", href: "/atendimentos/novo" },
-        ],
-      },
+    ],
+  },
+  {
+    title: "Cadastros",
+    items: [
       {
         title: "Clientes",
         href: "/clientes",
         icon: UsersIcon,
-        items: [
-          { title: "Todos", href: "/clientes" },
-          { title: "Novo Cliente", href: "/clientes/novo" },
-        ],
+      },
+      {
+        title: "Serviços",
+        href: "/servicos",
+        icon: ScissorsIcon,
+      },
+    ],
+  },
+  {
+    title: "Operacional",
+    items: [
+      {
+        title: "Atendimentos",
+        href: "/atendimentos",
+        icon: CalendarCheckIcon,
+      },
+      {
+        title: "Barbeiros",
+        href: "/barbeiros",
+        icon: UserCogIcon,
+      },
+    ],
+  },
+  {
+    title: "Financeiro",
+    items: [
+      {
+        title: "Faturamento",
+        href: "/faturamento",
+        icon: DollarSignIcon,
       },
     ],
   },
