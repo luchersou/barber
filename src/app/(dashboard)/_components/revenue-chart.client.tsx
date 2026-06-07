@@ -38,7 +38,7 @@ export function RevenueChart({ data }: RevenueChartProps) {
         <CardDescription>Últimos 30 dias</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="max-h-[250px] w-full">
           <AreaChart
             accessibilityLayer
             data={data}
