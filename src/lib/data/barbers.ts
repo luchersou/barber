@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-export async function getBarbers(userId: string) {
+export async function getBarbersForSelect(userId: string) {
   return prisma.barber.findMany({
     where: { userId, active: true },
     orderBy: { name: "asc" },
