@@ -1,7 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -24,6 +23,9 @@ const chartConfig = {
     label: "Atendimentos",
     color: "var(--chart-1)",
   },
+  label: {
+    color: "var(--background)",
+  },
 } satisfies ChartConfig;
 
 interface TopServicesChartProps {
@@ -44,22 +46,39 @@ export function TopServicesChart({ data }: TopServicesChartProps) {
             data={data}
             layout="vertical"
             margin={{
-              left: -20,
+              right: 16,
             }}
           >
-            <XAxis type="number" dataKey="count" hide />
+            <CartesianGrid horizontal={false} />
             <YAxis
               dataKey="name"
               type="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
+              hide
             />
+            <XAxis dataKey="count" type="number" hide />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent indicator="line" />}
             />
-            <Bar dataKey="count" fill="var(--color-count)" radius={5} />
+            <Bar dataKey="count" fill="var(--color-count)" radius={4}>
+              <LabelList
+                dataKey="name"
+                position="insideLeft"
+                offset={8}
+                className="fill-(--color-label)"
+                fontSize={12}
+              />
+              <LabelList
+                dataKey="count"
+                position="right"
+                offset={8}
+                className="fill-foreground"
+                fontSize={12}
+              />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
