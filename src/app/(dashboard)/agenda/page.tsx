@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { EventCalendarAppServer } from "@/components/calendar/event-calendar-app";
+import { EventCalendarAppServer } from "./_components/calendar/event-calendar-app";
 
 export default function AgendaPage() {
   return (
