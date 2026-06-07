@@ -1,7 +1,6 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import { LabelList, Pie, PieChart } from "recharts";
 
 import {
   Card,
@@ -55,11 +54,23 @@ export function AppointmentsByStatusChart({ data }: AppointmentsByStatusProps) {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
+          className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
         >
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Pie data={chartData} dataKey="value" label nameKey="status" />
+            <ChartTooltip
+              content={<ChartTooltipContent nameKey="value" hideLabel />}
+            />
+            <Pie data={chartData} dataKey="value">
+              <LabelList
+                dataKey="status"
+                className="fill-background"
+                stroke="none"
+                fontSize={12}
+                formatter={(value) =>
+                  statusConfig[value as AppointmentStatus]?.label ?? String(value)
+                }
+              />
+            </Pie>
           </PieChart>
         </ChartContainer>
       </CardContent>
