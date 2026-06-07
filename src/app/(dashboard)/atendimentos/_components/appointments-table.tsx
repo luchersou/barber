@@ -1,6 +1,6 @@
 import { getUser } from "@/lib/auth/auth";
 import { getAppointments } from "@/lib/data/appointments";
-import { getBarbers } from "@/lib/data/barbers";
+import { getBarbersForSelect } from "@/lib/data/barbers";
 import { getClientsForSelect } from "@/lib/data/clients";
 import { AppointmentsTableClient } from "./appointments-table.client";
 
@@ -23,7 +23,7 @@ export async function AppointmentsTableServer({
 
   const [data, barbers, clients] = await Promise.all([
     getAppointments(userId, { page, barberId, clientId, startDate, endDate }),
-    getBarbers(userId),
+    getBarbersForSelect(userId),
     getClientsForSelect(userId),
   ]);
 

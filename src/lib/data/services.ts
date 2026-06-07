@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 const SERVICES_PER_PAGE = 10;
 
-export async function getServices(userId: string): Promise<ServiceSelect[]> {
+export async function getServicesForSelect(userId: string): Promise<ServiceSelect[]> {
   const services = await prisma.service.findMany({
     where: { userId, active: true },
     orderBy: { name: "asc" },
