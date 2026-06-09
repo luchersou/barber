@@ -1,5 +1,4 @@
 import { CalendarEvent, EventColor } from "@/types/calendar";
-import { AppointmentStatus } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export async function getCalendarAppointments(userId: string): Promise<CalendarEvent[]> {
