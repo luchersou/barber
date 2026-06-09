@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
-export async function getBillingStats(userId: string) {
+export async function getBillingStats(userId: string): Promise<BillingStats> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -57,7 +58,7 @@ export async function getBillingStats(userId: string) {
   };
 }
 
-export async function getBillingRevenueChart(userId: string) {
+export async function getBillingRevenueChart(userId: string): Promise<BillingRevenueChart[]> {
   const now = new Date();
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
@@ -97,7 +98,7 @@ export async function getBillingRevenueChart(userId: string) {
   }));
 }
 
-export async function getBillingRevenueByBarber(userId: string) {
+export async function getBillingRevenueByBarber(userId: string): Promise<BillingRevenueByBarber[]> {
   const result = await prisma.appointment.groupBy({
     by: ["barberId"],
     where: {
@@ -123,7 +124,7 @@ export async function getBillingRevenueByBarber(userId: string) {
   }));
 }
 
-export async function getBillingRevenueByService(userId: string) {
+export async function getBillingRevenueByService(userId: string): Promise<BillingRevenueByService[]> {
   const result = await prisma.appointmentService.groupBy({
     by: ["serviceId"],
     where: {
