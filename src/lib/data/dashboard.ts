@@ -125,30 +125,3 @@ export async function getTopServices(userId: string): Promise<TopService[]> {
     count: item._count.serviceId,
   }));
 }
-
-export async function getTopBarbers(userId: string): Promise<TopBarber[]> {
-  const result = await prisma.appointment.groupBy({
-    by: ["barberId"],
-    where: {
-      userId,
-      status: AppointmentStatus.COMPLETED,
-    },
-    _sum: { totalPrice: true },
-    orderBy: { _sum: { totalPrice: "desc" } },
-    take: 5,
-  });
-
-  const barberIds = result.map((item) => item.barberId);
-
-  const barbers = await prisma.barber.findMany({
-    where: { userId, id: { in: barberIds } },
-    select: { id: true, name: true },
-  });
-
-  const barberMap = Object.fromEntries(barbers.map((b) => [b.id, b.name]));
-
-  return result.map((item) => ({
-    name: barberMap[item.barberId] ?? item.barberId,
-    revenue: Number(item._sum.totalPrice ?? 0),
-  }));
-}
