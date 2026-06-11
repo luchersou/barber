@@ -1,20 +1,16 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth/auth";
-import { createAppointmentSchema } from "@/lib/validations/appointment";
-
-type AppointmentInput = z.infer<typeof createAppointmentSchema>;
-
+import { createAppointmentSchema, CreateAppointmentInput } from "@/lib/validations/appointment";
 
 /**
  * Validates appointment data, ensures related entities exist,
  * and prepares the data required for creation or update operations.
  */
 async function buildAppointmentData(
-  data: AppointmentInput,
+  data: CreateAppointmentInput,
   userId: string
 ) {
   const result = createAppointmentSchema.safeParse(data);
@@ -99,7 +95,7 @@ function revalidateAppointments() {
 /**
  * Creates a new appointment and associates the selected services.
  */
-export async function createAppointment(data: AppointmentInput) {
+export async function createAppointment(data: CreateAppointmentInput) {
   const { userId } = await getUser();
 
   const {
@@ -140,7 +136,7 @@ export async function createAppointment(data: AppointmentInput) {
  */
 export async function updateAppointment(
   id: string,
-  data: AppointmentInput
+  data: CreateAppointmentInput
 ) {
   const { userId } = await getUser();
 
