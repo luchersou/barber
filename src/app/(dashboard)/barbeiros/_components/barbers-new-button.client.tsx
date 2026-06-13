@@ -13,21 +13,34 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createBarber } from "@/actions/barbers";
 
 export function BarbersNewButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleClose() {
     setIsOpen(false);
     setName("");
     setPhone("");
+    setError(null);
+    setIsLoading(false);
   }
 
   async function handleSave() {
-    // TODO: await createBarber({ name, phone })
-    handleClose();
+    try {
+      setIsLoading(true);
+      setError(null);
+      await createBarber({ name, phone });
+      handleClose();
+    } catch (err) {
+      setError("Erro ao criar barbeiro. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -44,6 +57,11 @@ export function BarbersNewButton() {
               Adicione um novo barbeiro à equipe
             </DialogDescription>
           </DialogHeader>
+          {error && (
+            <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
+              {error}
+            </div>
+          )}
           <div className="grid gap-4 py-4">
             <div className="*:not-first:mt-1.5">
               <Label htmlFor="name">Nome</Label>
@@ -65,10 +83,12 @@ export function BarbersNewButton() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose}>
+            <Button variant="outline" onClick={handleClose} disabled={isLoading}>
               Cancelar
             </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
