@@ -6,7 +6,6 @@ import { ChevronsUpDown, ShoppingBagIcon, UserCircle2Icon } from "lucide-react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
 import { useIsTablet } from "@/hooks/use-mobile";
-import Link from "next/link";
 
 import {
   Sidebar,
@@ -30,7 +29,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

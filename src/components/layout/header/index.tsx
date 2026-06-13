@@ -1,12 +1,10 @@
 "use client";
 
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import Link from "next/link";
 
 import { Separator } from "@/components/ui/separator";
 import Search from "@/components/layout/header/search";
 import ThemeSwitch from "@/components/layout/header/theme-switch";
-import UserMenu from "@/components/layout/header/user-menu";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 
