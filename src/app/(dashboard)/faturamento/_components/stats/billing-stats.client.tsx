@@ -15,7 +15,26 @@ interface BillingStatsCardsProps {
   data: BillingStats;
 }
 
+function calcVariation(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 100);
+}
+
+function VariationBadge({ value }: { value: number }) {
+  const isPositive = value >= 0;
+  return (
+    <span className={isPositive ? "text-green-600" : "text-red-600"}>
+      {isPositive ? "+" : ""}{value}% em relação ao mês anterior
+    </span>
+  );
+}
+
 export function BillingStatsCards({ data }: BillingStatsCardsProps) {
+  const variations = {
+    monthRevenue: calcVariation(data.monthRevenue, data.lastMonth.monthRevenue),
+    completionRate: calcVariation(data.completionRate, data.lastMonth.completionRate),
+  };
+
   return (
     <div className="*:data-[slot=card]:from-primary/10 grid gap-4 *:data-[slot=card]:bg-gradient-to-t md:grid-cols-2 lg:grid-cols-4">
       <Card>
@@ -38,7 +57,9 @@ export function BillingStatsCards({ data }: BillingStatsCardsProps) {
       <Card>
         <CardHeader>
           <CardTitle>Receita do Mês</CardTitle>
-          <CardDescription>Mês atual</CardDescription>
+          <CardDescription>
+            <VariationBadge value={variations.monthRevenue} />
+          </CardDescription>
           <CardAction>
             <TrendingUp className="text-muted-foreground/50 size-4 lg:size-6" />
           </CardAction>
@@ -72,7 +93,9 @@ export function BillingStatsCards({ data }: BillingStatsCardsProps) {
       <Card>
         <CardHeader>
           <CardTitle>Taxa de Conclusão</CardTitle>
-          <CardDescription>Concluídos / total</CardDescription>
+          <CardDescription>
+            <VariationBadge value={variations.completionRate} />
+          </CardDescription>
           <CardAction>
             <CheckCircle className="text-muted-foreground/50 size-4 lg:size-6" />
           </CardAction>

@@ -3,6 +3,10 @@ export type BillingStats = {
   monthRevenue: number;
   averageTicket: number;
   completionRate: number;
+  lastMonth: {
+    monthRevenue: number;
+    completionRate: number;
+  };
 };
 
 export type BillingRevenueChart = {
