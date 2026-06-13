@@ -68,11 +68,13 @@ export function EventDialog({
   const [startDateOpen, setStartDateOpen] = useState(false);
 
   useEffect(() => {
-    if (event?.id) {
+    if (event) {
       const start = new Date(event.start);
       setStartDate(start);
       setStartTime(formatTimeForInput(start));
-      setNotes(event.description || "");
+      if (event.id) {
+        setNotes(event.description || "");
+      }
       setError(null);
     } else {
       resetForm();
