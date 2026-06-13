@@ -206,6 +206,26 @@ export async function deleteAppointment(id: string) {
   };
 }
 
+/**
+ * Updates only the date and time of an existing appointment.
+ */
+export async function updateAppointmentDate(id: string, date: string, time: string) {
+  const { userId } = await getUser();
+
+  const [hours, minutes] = time.split(":").map(Number);
+  const appointmentDate = new Date(date);
+  appointmentDate.setHours(hours, minutes, 0, 0);
+
+  await prisma.appointment.update({
+    where: { id, userId },
+    data: { date: appointmentDate },
+  });
+
+  revalidateAppointments();
+
+  return { success: true };
+}
+
 export async function getAppointmentByIdAction(id: string) {
   const { userId } = await getUser();
   return getAppointmentById(id, userId);

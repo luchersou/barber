@@ -31,6 +31,7 @@ import { ClientSelect } from "@/types/clients";
 import { BarberSelect } from "@/types/barbers";
 import { ServiceSelect } from "@/types/services";
 import { createAppointment, updateAppointment, deleteAppointment, getAppointmentByIdAction } from "@/actions/appointment";
+import { CreateAppointmentInput } from "@/lib/validations/appointment";
 
 const statusColor: Record<string, EventColor> = {
   default: "sky",
@@ -40,7 +41,7 @@ interface EventDialogProps {
   event: CalendarEvent | null;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (event: CalendarEvent) => void;
+  onSave: (data: CreateAppointmentInput & { id?: string }) => Promise<void>;
   onDelete: (eventId: string) => void;
   clients: ClientSelect[];
   barbers: BarberSelect[];
@@ -136,44 +137,20 @@ export function EventDialog({
       return;
     }
 
-    const start = new Date(startDate);
-    start.setHours(startHours, startMinutes, 0, 0);
-
-    const selectedServices = services.filter((s) => selectedServiceIds.includes(s.id));
-    const totalDuration = selectedServices.reduce((acc, s) => acc + s.duration, 0);
-    const end = new Date(start.getTime() + totalDuration * 60 * 1000);
-
-    const client = clients.find((c) => c.id === clientId);
-    const barber = barbers.find((b) => b.id === barberId);
-
     try {
       setIsLoading(true);
       setError(null);
 
       const dateStr = startDate.toISOString().split("T")[0];
-      const payload = {
+
+      await onSave({
+        id: event?.id,
         clientId,
         barberId,
         serviceIds: selectedServiceIds,
         date: dateStr,
         time: startTime,
         notes,
-      };
-
-      if (event?.id) {
-        await updateAppointment(event.id, payload);
-      } else {
-        await createAppointment(payload);
-      }
-
-      onSave({
-        id: event?.id || "",
-        title: client?.name ?? "",
-        description: `${barber?.name} · ${selectedServices.map((s) => s.name).join(", ")}`,
-        start,
-        end,
-        color: statusColor["default"],
-        location: `Barbeiro: ${barber?.name}`,
       });
     } catch (err) {
       setError("Erro ao salvar atendimento. Tente novamente.");
@@ -182,18 +159,9 @@ export function EventDialog({
     }
   };
 
-  const handleDelete = async () => {
-    if (!event?.id) return;
-
-    try {
-      setIsLoading(true);
-      setError(null);
-      await deleteAppointment(event.id);
+  const handleDelete = () => {
+    if (event?.id) {
       onDelete(event.id);
-    } catch (err) {
-      setError("Erro ao deletar atendimento. Tente novamente.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -343,7 +311,7 @@ export function EventDialog({
             <Button
               variant="outline"
               size="icon"
-              onClick={handleDelete}
+              onClick={() => handleDelete()}
               disabled={isLoading}
               aria-label="Deletar atendimento"
             >

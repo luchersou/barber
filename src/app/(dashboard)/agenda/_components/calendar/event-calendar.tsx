@@ -43,10 +43,11 @@ import {
 import { ClientSelect } from "@/types/clients";
 import { BarberSelect } from "@/types/barbers";
 import { ServiceSelect } from "@/types/services";
+import { CreateAppointmentInput } from "@/lib/validations/appointment";
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
-  onEventAdd?: (event: CalendarEvent) => void;
+  onEventSave?: (data: CreateAppointmentInput & { id?: string }) => Promise<void>;
   onEventUpdate?: (event: CalendarEvent) => void;
   onEventDelete?: (eventId: string) => void;
   className?: string;
@@ -54,11 +55,12 @@ export interface EventCalendarProps {
   clients: ClientSelect[];
   barbers: BarberSelect[];
   services: ServiceSelect[];
+  
 }
 
 export function EventCalendar({
   events = [],
-  onEventAdd,
+  onEventSave,
   onEventUpdate,
   onEventDelete,
   className,
@@ -148,23 +150,8 @@ export function EventCalendar({
     setIsEventDialogOpen(true);
   };
 
-  const handleEventSave = (event: CalendarEvent) => {
-    if (event.id) {
-      onEventUpdate?.(event);
-      toast(`Atendimento "${event.title}" atualizado`, {
-        description: format(new Date(event.start), "dd/MM/yyyy"),
-        position: "bottom-left",
-      });
-    } else {
-      onEventAdd?.({
-        ...event,
-        id: Math.random().toString(36).substring(2, 11),
-      });
-      toast(`Atendimento "${event.title}" adicionado`, {
-        description: format(new Date(event.start), "dd/MM/yyyy"),
-        position: "bottom-left",
-      });
-    }
+  const handleEventSave = async (data: CreateAppointmentInput & { id?: string }) => {
+    await onEventSave?.(data);
     setIsEventDialogOpen(false);
     setSelectedEvent(null);
   };
