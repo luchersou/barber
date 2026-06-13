@@ -17,6 +17,11 @@ export type AppointmentsByStatus = {
   value: number;
 };
 
+export type TopBarberRevenue = {
+  barber: string;
+  revenue: number;
+};
+
 export type TopService = {
   name: string;
   count: number;

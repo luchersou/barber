@@ -97,6 +97,33 @@ export async function getAppointmentsByStatus(userId: string) {
   }));
 }
 
+export async function getTopBarbersByRevenue(userId: string) {
+  const result = await prisma.appointment.groupBy({
+    by: ["barberId"],
+    where: {
+      userId,
+      status: AppointmentStatus.COMPLETED,
+    },
+    _sum: { totalPrice: true },
+    orderBy: { _sum: { totalPrice: "desc" } },
+  });
+
+  const barberIds = result.map((item) => item.barberId);
+
+  const barbers = await prisma.barber.findMany({
+    where: { id: { in: barberIds } },
+    select: { id: true, name: true },
+  });
+
+  const barberMap = Object.fromEntries(barbers.map((b) => [b.id, b.name]));
+
+  return result.map((item) => ({
+    barber: barberMap[item.barberId] ?? item.barberId,
+    revenue: Number(item._sum.totalPrice ?? 0),
+  }));
+}
+
+
 export async function getTopServices(userId: string): Promise<TopService[]> {
   const result = await prisma.appointmentService.groupBy({
     by: ["serviceId"],
