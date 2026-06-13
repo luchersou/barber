@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
-import { DashboardStats, RevenueChart, TopBarber, TopService } from "@/types/dashboard";
+import { DashboardStats, RevenueChart, TopBarberRevenue, TopService } from "@/types/dashboard";
 
 const REVENUE_CHART_DAYS = 30;
 
@@ -97,7 +97,7 @@ export async function getAppointmentsByStatus(userId: string) {
   }));
 }
 
-export async function getTopBarbersByRevenue(userId: string) {
+export async function getTopBarbersByRevenue(userId: string): Promise<TopBarberRevenue[]> {
   const result = await prisma.appointment.groupBy({
     by: ["barberId"],
     where: {

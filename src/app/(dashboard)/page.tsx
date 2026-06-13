@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { SummaryCardsServer } from "./_components/summary-cards";
 import { RevenueChartServer } from "./_components/revenue-chart";
-import { AppointmentsByStatusServer } from "./_components/appointments-by-status";
 import { TopServicesServer } from "./_components/top-services";
 import { TopBarbersRevenueServer } from "./_components/top-barbers-revenue";
 

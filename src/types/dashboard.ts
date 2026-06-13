@@ -1,5 +1,3 @@
-import { AppointmentStatus } from "@/generated/prisma/client";
-
 export type DashboardStats = {
   totalClients: number;
   monthAppointments: number;
@@ -12,11 +10,6 @@ export type RevenueChart = {
   revenue: number;
 };
 
-export type AppointmentsByStatus = {
-  status: AppointmentStatus;
-  value: number;
-};
-
 export type TopBarberRevenue = {
   barber: string;
   revenue: number;
@@ -25,9 +18,4 @@ export type TopBarberRevenue = {
 export type TopService = {
   name: string;
   count: number;
-};
-
-export type TopBarber = {
-  name: string;
-  revenue: number;
 };
