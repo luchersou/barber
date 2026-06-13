@@ -13,23 +13,36 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createService } from "@/actions/services";
 
 export function ServicesNewButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [duration, setDuration] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleClose() {
     setIsOpen(false);
     setName("");
     setPrice("");
     setDuration("");
+    setError(null);
+    setIsLoading(false);
   }
 
   async function handleSave() {
-    // TODO: await createService({ name, price: Number(price), duration: Number(duration) })
-    handleClose();
+    try {
+      setIsLoading(true);
+      setError(null);
+      await createService({ name, price: Number(price), duration: Number(duration) });
+      handleClose();
+    } catch (err) {
+      setError("Erro ao criar serviço. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -78,10 +91,12 @@ export function ServicesNewButton() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose}>
+            <Button variant="outline" onClick={handleClose} disabled={isLoading}>
               Cancelar
             </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
