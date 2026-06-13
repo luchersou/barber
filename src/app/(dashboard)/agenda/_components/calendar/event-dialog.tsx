@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ClientSelect } from "@/types/clients";
 import { BarberSelect } from "@/types/barbers";
 import { ServiceSelect } from "@/types/services";
+import { createAppointment } from "@/actions/appointment";
 
 const statusColor: Record<string, EventColor> = {
   default: "sky",
@@ -62,6 +63,7 @@ export function EventDialog({
   const [notes, setNotes] = useState("");
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [startTime, setStartTime] = useState(`${DefaultStartHour}:00`);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [startDateOpen, setStartDateOpen] = useState(false);
 
@@ -116,7 +118,7 @@ export function EventDialog({
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!clientId) {
       setError("Selecione um cliente");
       return;
@@ -147,15 +149,35 @@ export function EventDialog({
     const client = clients.find((c) => c.id === clientId);
     const barber = barbers.find((b) => b.id === barberId);
 
-    onSave({
-      id: event?.id || "",
-      title: client?.name ?? "",
-      description: `${barber?.name} · ${selectedServices.map((s) => s.name).join(", ")}`,
-      start,
-      end,
-      color: "sky",
-      location: `Barbeiro: ${barber?.name}`,
-    });
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const dateStr = startDate.toISOString().split("T")[0];
+
+      await createAppointment({
+        clientId,
+        barberId,
+        serviceIds: selectedServiceIds,
+        date: dateStr,
+        time: startTime,
+        notes,
+      });
+
+      onSave({
+        id: event?.id || "",
+        title: client?.name ?? "",
+        description: `${barber?.name} · ${selectedServices.map((s) => s.name).join(", ")}`,
+        start,
+        end,
+        color: "sky",
+        location: `Barbeiro: ${barber?.name}`,
+      });
+    } catch (err) {
+      setError("Erro ao salvar atendimento. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDelete = () => {
@@ -320,7 +342,9 @@ export function EventDialog({
             <Button variant="outline" onClick={onClose}>
               Cancelar
             </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>
