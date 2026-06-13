@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/auth/auth";
 import { createAppointmentSchema, CreateAppointmentInput } from "@/lib/validations/appointment";
+import { getAppointmentById } from "@/lib/data/appointments";
 
 /**
  * Validates appointment data, ensures related entities exist,
@@ -203,4 +204,9 @@ export async function deleteAppointment(id: string) {
   return {
     success: true,
   };
+}
+
+export async function getAppointmentByIdAction(id: string) {
+  const { userId } = await getUser();
+  return getAppointmentById(id, userId);
 }

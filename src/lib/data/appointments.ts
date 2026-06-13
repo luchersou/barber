@@ -68,3 +68,32 @@ export async function getAppointments(
     currentPage: page,
   };
 }
+
+export async function getAppointmentById(id: string, userId: string) {
+  const appointment = await prisma.appointment.findUnique({
+    where: { id, userId },
+    select: {
+      id: true,
+      clientId: true,
+      barberId: true,
+      date: true,
+      notes: true,
+      services: {
+        select: {
+          serviceId: true,
+        },
+      },
+    },
+  });
+
+  if (!appointment) return null;
+
+  return {
+    id: appointment.id,
+    clientId: appointment.clientId,
+    barberId: appointment.barberId,
+    date: appointment.date,
+    notes: appointment.notes ?? "",
+    serviceIds: appointment.services.map((s) => s.serviceId),
+  };
+}

@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { RiCalendarLine, RiDeleteBinLine } from "@remixicon/react";
-import { format, isBefore } from "date-fns";
+import { format } from "date-fns";
 
 import type { CalendarEvent, EventColor } from "./";
-import { DefaultEndHour, DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
+import { DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,7 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ClientSelect } from "@/types/clients";
 import { BarberSelect } from "@/types/barbers";
 import { ServiceSelect } from "@/types/services";
-import { createAppointment } from "@/actions/appointment";
+import { createAppointment, updateAppointment, deleteAppointment, getAppointmentByIdAction } from "@/actions/appointment";
 
 const statusColor: Record<string, EventColor> = {
   default: "sky",
@@ -68,16 +68,24 @@ export function EventDialog({
   const [startDateOpen, setStartDateOpen] = useState(false);
 
   useEffect(() => {
-    if (event) {
-      const start = new Date(event.start);
-      setStartDate(start);
-      setStartTime(formatTimeForInput(start));
-      if (event.id) {
-        setNotes(event.description || "");
-      }
-      setError(null);
-    } else {
+    if (!event) {
       resetForm();
+      return;
+    }
+
+    const start = new Date(event.start);
+    setStartDate(start);
+    setStartTime(formatTimeForInput(start));
+    setError(null);
+
+    if (event.id) {
+      getAppointmentByIdAction(event.id).then((data) => {
+        if (!data) return;
+        setClientId(data.clientId);
+        setBarberId(data.barberId);
+        setSelectedServiceIds(data.serviceIds);
+        setNotes(data.notes);
+      });
     }
   }, [event]);
 
@@ -121,19 +129,6 @@ export function EventDialog({
   };
 
   const handleSave = async () => {
-    if (!clientId) {
-      setError("Selecione um cliente");
-      return;
-    }
-    if (!barberId) {
-      setError("Selecione um barbeiro");
-      return;
-    }
-    if (selectedServiceIds.length === 0) {
-      setError("Selecione ao menos um serviço");
-      return;
-    }
-
     const [startHours = 0, startMinutes = 0] = startTime.split(":").map(Number);
 
     if (startHours < StartHour || startHours > EndHour) {
@@ -156,15 +151,20 @@ export function EventDialog({
       setError(null);
 
       const dateStr = startDate.toISOString().split("T")[0];
-
-      await createAppointment({
+      const payload = {
         clientId,
         barberId,
         serviceIds: selectedServiceIds,
         date: dateStr,
         time: startTime,
         notes,
-      });
+      };
+
+      if (event?.id) {
+        await updateAppointment(event.id, payload);
+      } else {
+        await createAppointment(payload);
+      }
 
       onSave({
         id: event?.id || "",
@@ -172,7 +172,7 @@ export function EventDialog({
         description: `${barber?.name} · ${selectedServices.map((s) => s.name).join(", ")}`,
         start,
         end,
-        color: "sky",
+        color: statusColor["default"],
         location: `Barbeiro: ${barber?.name}`,
       });
     } catch (err) {
@@ -182,9 +182,18 @@ export function EventDialog({
     }
   };
 
-  const handleDelete = () => {
-    if (event?.id) {
+  const handleDelete = async () => {
+    if (!event?.id) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      await deleteAppointment(event.id);
       onDelete(event.id);
+    } catch (err) {
+      setError("Erro ao deletar atendimento. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -335,6 +344,7 @@ export function EventDialog({
               variant="outline"
               size="icon"
               onClick={handleDelete}
+              disabled={isLoading}
               aria-label="Deletar atendimento"
             >
               <RiDeleteBinLine size={16} aria-hidden="true" />
