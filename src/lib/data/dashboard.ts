@@ -7,41 +7,76 @@ const REVENUE_CHART_DAYS = 30;
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
 
-  const [totalClients, monthAppointments, monthRevenue, completedThisMonth] =
-    await Promise.all([
-      prisma.client.count({ where: { userId } }),
+  const [
+    totalClients,
+    monthAppointments,
+    monthRevenue,
+    completedThisMonth,
+    lastMonthAppointments,
+    lastMonthRevenue,
+    completedLastMonth,
+  ] = await Promise.all([
+    prisma.client.count({ where: { userId } }),
 
-      prisma.appointment.count({
-        where: {
-          userId,
-          createdAt: { gte: startOfMonth },
-        },
-      }),
+    prisma.appointment.count({
+      where: { userId, createdAt: { gte: startOfMonth } },
+    }),
 
-      prisma.appointment.aggregate({
-        where: {
-          userId,
-          status: AppointmentStatus.COMPLETED,
-          createdAt: { gte: startOfMonth },
-        },
-        _sum: { totalPrice: true },
-      }),
+    prisma.appointment.aggregate({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        createdAt: { gte: startOfMonth },
+      },
+      _sum: { totalPrice: true },
+    }),
 
-      prisma.appointment.count({
-        where: {
-          userId,
-          status: AppointmentStatus.COMPLETED,
-          createdAt: { gte: startOfMonth },
-        },
-      }),
-    ]);
+    prisma.appointment.count({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        createdAt: { gte: startOfMonth },
+      },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        userId,
+        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+      },
+    }),
+
+    prisma.appointment.aggregate({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+      },
+      _sum: { totalPrice: true },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+      },
+    }),
+  ]);
 
   return {
     totalClients,
     monthAppointments,
     monthRevenue: Number(monthRevenue._sum.totalPrice ?? 0),
     completedThisMonth,
+    lastMonth: {
+      monthAppointments: lastMonthAppointments,
+      monthRevenue: Number(lastMonthRevenue._sum.totalPrice ?? 0),
+      completedThisMonth: completedLastMonth,
+    },
   };
 }
 

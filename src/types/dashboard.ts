@@ -5,6 +5,11 @@ export type DashboardStats = {
   monthAppointments: number;
   monthRevenue: number;
   completedThisMonth: number;
+  lastMonth: {
+    monthAppointments: number;
+    monthRevenue: number;
+    completedThisMonth: number;
+  };
 };
 
 export type RevenueChart = {
