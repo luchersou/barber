@@ -38,11 +38,14 @@ export async function getUser(throwError = true): Promise<FilledUser | EmptyUser
   if (!user) {
     const client = await clerkClient();
     const clerkUser = await client.users.getUser(clerkUserId);
+    const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
 
-    user = await prisma.user.create({
-      data: {
+    user = await prisma.user.upsert({
+      where: { email },
+      update: { clerkUserId },
+      create: {
         clerkUserId,
-        email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+        email,
         name: clerkUser.fullName ?? clerkUser.firstName ?? "",
       },
     });

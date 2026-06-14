@@ -57,12 +57,12 @@ export const navItems: NavGroup[] = [
     items: [
       {
         title: "Início",
-        href: "/",
+        href: "/dashboard",
         icon: HomeIcon,
       },
       {
         title: "Agenda",
-        href: "/agenda",
+        href: "/dashboard/agenda",
         icon: CalendarIcon,
       },
     ],
@@ -72,12 +72,12 @@ export const navItems: NavGroup[] = [
     items: [
       {
         title: "Clientes",
-        href: "/clientes",
+        href: "/dashboard/clientes",
         icon: UsersIcon,
       },
       {
         title: "Serviços",
-        href: "/servicos",
+        href: "/dashboard/servicos",
         icon: ScissorsIcon,
       },
     ],
@@ -87,12 +87,12 @@ export const navItems: NavGroup[] = [
     items: [
       {
         title: "Atendimentos",
-        href: "/atendimentos",
+        href: "/dashboard/atendimentos",
         icon: CalendarCheckIcon,
       },
       {
         title: "Barbeiros",
-        href: "/barbeiros",
+        href: "/dashboard/barbeiros",
         icon: UserCogIcon,
       },
     ],
@@ -102,7 +102,7 @@ export const navItems: NavGroup[] = [
     items: [
       {
         title: "Faturamento",
-        href: "/faturamento",
+        href: "/dashboard/faturamento",
         icon: DollarSignIcon,
       },
     ],
