@@ -7,6 +7,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useRouter } from "next/navigation";
 
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -60,28 +61,31 @@ export default function Search() {
             <DialogTitle></DialogTitle>
           </DialogHeader>
         </VisuallyHidden>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          {navItems.map((route) => (
-            <React.Fragment key={route.title}>
-              <CommandGroup heading={route.title}>
-                {route.items.map((item, key) => (
-                  <CommandItem
-                    key={key}
-                    onSelect={() => {
-                      setOpen(false);
-                      router.push(item.href);
-                    }}>
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-              <CommandSeparator />
-            </React.Fragment>
-          ))}
-        </CommandList>
+        <Command>
+          <CommandInput placeholder="Type a command or search..." />
+          <CommandList>
+            <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+              {navItems.map((group) => (
+                <React.Fragment key={group.title}>
+                  <CommandGroup heading={group.title}>
+                    {group.items.map((item) => (
+                      <CommandItem
+                        key={item.href}
+                        onSelect={() => {
+                          setOpen(false);
+                          router.push(item.href);
+                        }}
+                      >
+                        {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                        <span>{item.title}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                  <CommandSeparator />
+                </React.Fragment>
+              ))}
+          </CommandList>
+        </Command>
       </CommandDialog>
     </div>
   );
