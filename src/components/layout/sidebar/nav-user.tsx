@@ -23,7 +23,7 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { user } = useUser();
-  const { signOut } = useClerk();
+  const { signOut, openUserProfile } = useClerk();
 
   const name = user?.fullName ?? user?.firstName ?? "";
   const email = user?.emailAddresses[0]?.emailAddress ?? "";
@@ -75,17 +75,9 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => openUserProfile()}>
                 <UserCircle2Icon />
                 Conta
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Faturamento
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon />
-                Notificações
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
