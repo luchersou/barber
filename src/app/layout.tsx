@@ -1,37 +1,66 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import React from "react";
+import { cookies } from "next/headers";
+import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "next-themes";
+import { Metadata } from "next";
+import { fontVariables } from "@/lib/fonts";
+import NextTopLoader from "nextjs-toploader";
+import Script from "next/script";
+
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ActiveThemeProvider } from "@/components/theme-customizer/active-theme";
+import { DEFAULT_THEME } from "@/lib/themes/themes";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "BarberApp",
   description: "Sistema de gestão para barbearias",
 };
 
-export default function RootLayout({
-  children,
+export default async function RootLayout({
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const themeSettings = {
+    preset: (cookieStore.get("theme_preset")?.value ?? DEFAULT_THEME.preset) as any,
+    scale: (cookieStore.get("theme_scale")?.value ?? DEFAULT_THEME.scale) as any,
+    radius: (cookieStore.get("theme_radius")?.value ?? DEFAULT_THEME.radius) as any,
+    contentLayout: (cookieStore.get("theme_content_layout")?.value ??
+      DEFAULT_THEME.contentLayout) as any
+  };
+
+  const bodyAttributes = Object.fromEntries(
+    Object.entries(themeSettings)
+      .filter(([_, value]) => value)
+      .map(([key, value]) => [`data-theme-${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`, value])
+  );
+
   return (
-    <html
-      lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col font-sans">
-        <ClerkProvider>
-          {children}
-        </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script src="https://dashboard.shadcnuikit.com/iframe-listener.js" strategy="afterInteractive" />
+      </head>
+      <body
+        suppressHydrationWarning
+        className={cn("bg-background group/layout font-sans", fontVariables)}
+        {...bodyAttributes}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange>
+          <ActiveThemeProvider initialTheme={themeSettings}>
+            <ClerkProvider>
+              {children}
+            </ClerkProvider>
+            <Toaster position="top-center" richColors />
+            <NextTopLoader color="var(--primary)" showSpinner={false} height={2} shadow-sm="none" />
+          </ActiveThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
