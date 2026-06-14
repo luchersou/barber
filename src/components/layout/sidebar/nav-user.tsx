@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { BellIcon, CreditCardIcon, LogOutIcon, UserCircle2Icon } from "lucide-react";
+import { LogOutIcon, UserCircle2Icon } from "lucide-react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 export function NavUser() {
