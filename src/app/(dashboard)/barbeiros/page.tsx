@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
 import { BarbersTableServer } from "./_components/barbers-table";
 import { BarbersNewButton } from "./_components/barbers-new-button.client";
 
@@ -26,7 +27,7 @@ export default async function BarbersPage({
         </div>
         <BarbersNewButton />
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<TableSkeleton cols={4} />}>
         <BarbersTableServer
           page={page ? Number(page) : undefined}
           search={search}

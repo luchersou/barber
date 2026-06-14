@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
 import { ClientsTableServer } from "./_components/clients-table";
 import { ClientsNewButton } from "./_components/clients-new-button.client";
 
@@ -25,7 +26,7 @@ export default async function ClientsPage({
         </div>
         <ClientsNewButton />
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<TableSkeleton cols={7} />}>
         <ClientsTableServer
           page={page ? Number(page) : undefined}
           search={search}

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
 import { AppointmentsTableServer } from "./_components/appointments-table";
 
 interface AppointmentsPageProps {
@@ -24,7 +25,7 @@ export default async function AppointmentsPage({
           Gerencie os atendimentos da barbearia.
         </p>
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<TableSkeleton cols={7} />}>
         <AppointmentsTableServer
           page={page ? Number(page) : undefined}
           barberId={barberId}

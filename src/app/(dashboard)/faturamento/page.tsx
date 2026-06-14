@@ -1,4 +1,8 @@
 import { Suspense } from "react";
+import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
+import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
+import { RevenueChartSkeleton } from "@/components/shared/skeletons/revenue-chart-skeleton";
+import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
 import { BillingStatsServer } from "./_components/stats/billing-stats";
 import { BillingRevenueChartServer } from "./_components/charts/billing-revenue-chart";
 import { BillingRevenueByBarberServer } from "./_components/charts/billing-revenue-by-barber";
@@ -24,21 +28,21 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
           Métricas de receita e relatórios.
         </p>
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<StatsSkeleton />}>
         <BillingStatsServer />
       </Suspense>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<RevenueChartSkeleton />}>
         <BillingRevenueChartServer />
       </Suspense>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Suspense fallback={<div>Carregando...</div>}>
+        <Suspense fallback={<ChartSkeleton />}>
           <BillingRevenueByBarberServer />
         </Suspense>
-        <Suspense fallback={<div>Carregando...</div>}>
+        <Suspense fallback={<ChartSkeleton />}>
           <BillingRevenueByServiceServer />
         </Suspense>
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<TableSkeleton />}>
         <BillingTransactionsServer
           page={page ? Number(page) : undefined}
           startDate={startDate}

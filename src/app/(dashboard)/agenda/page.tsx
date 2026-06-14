@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { CalendarSkeleton } from "@/components/shared/skeletons/calendar-skeleton";
 import { EventCalendarAppServer } from "./_components/calendar/event-calendar-app";
 
 export default function AgendaPage() {
@@ -10,7 +11,7 @@ export default function AgendaPage() {
           Gerencie os agendamentos da barbearia.
         </p>
       </div>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<CalendarSkeleton />}>
         <EventCalendarAppServer />
       </Suspense>
     </div>
