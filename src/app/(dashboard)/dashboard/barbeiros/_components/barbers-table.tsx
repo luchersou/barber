@@ -17,5 +17,7 @@ export async function BarbersTableServer({
 
   const data = await getBarbersTable(userId, { page, search, active });
 
-  return <BarbersTableClient data={data} />;
+  const hasFilters = Boolean(search || active !== undefined);
+
+  return <BarbersTableClient data={data} hasFilters={hasFilters} />;
 }

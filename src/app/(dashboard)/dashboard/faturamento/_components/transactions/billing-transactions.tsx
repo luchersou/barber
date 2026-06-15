@@ -17,5 +17,7 @@ export async function BillingTransactionsServer({
 
   const data = await getBillingTransactions(userId, { page, startDate, endDate });
 
-  return <BillingTransactionsClient data={data} />;
+  const hasFilters = Boolean(startDate || endDate);
+
+  return <BillingTransactionsClient data={data} hasFilters={hasFilters} />;
 }

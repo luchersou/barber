@@ -16,6 +16,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { BillingRevenueChart } from "@/types/billing";
+import { EmptyState } from "@/components/shared/empty-state";
+import { TrendingUp } from "lucide-react";
 
 const chartConfig = {
   revenue: {
@@ -29,6 +31,8 @@ interface BillingRevenueChartClientProps {
 }
 
 export function BillingRevenueChartClient({ data }: BillingRevenueChartClientProps) {
+  const isEmpty = data.every((d) => d.revenue === 0);
+
   return (
     <Card>
       <CardHeader>
@@ -36,43 +40,53 @@ export function BillingRevenueChartClient({ data }: BillingRevenueChartClientPro
         <CardDescription>Últimos 12 meses</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="max-h-[250px] w-full">
-          <AreaChart
-            accessibilityLayer
-            data={data}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Area
-              dataKey="revenue"
-              type="natural"
-              fill="var(--color-revenue)"
-              fillOpacity={0.4}
-              stroke="var(--color-revenue)"
-            />
-          </AreaChart>
-        </ChartContainer>
+        {isEmpty ? (
+          <EmptyState
+            icon={TrendingUp}
+            title="Sem dados de receita"
+            description="O histórico de receita dos últimos 12 meses aparecerá aqui conforme os atendimentos forem concluídos."
+          />
+        ) : (
+          <ChartContainer config={chartConfig} className="max-h-[250px] w-full">
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Area
+                dataKey="revenue"
+                type="natural"
+                fill="var(--color-revenue)"
+                fillOpacity={0.4}
+                stroke="var(--color-revenue)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        )}
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="leading-none text-muted-foreground">
-            Apenas agendamentos concluídos
+      {!isEmpty && (
+        <CardFooter>
+          <div className="flex w-full items-start gap-2 text-sm">
+            <div className="leading-none text-muted-foreground">
+              Apenas agendamentos concluídos
+            </div>
           </div>
-        </div>
-      </CardFooter>
+        </CardFooter>
+      )}
     </Card>
   );
 }

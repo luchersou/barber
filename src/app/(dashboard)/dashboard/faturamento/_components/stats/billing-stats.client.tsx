@@ -20,7 +20,11 @@ function calcVariation(current: number, previous: number): number {
   return Math.round(((current - previous) / previous) * 100);
 }
 
-function VariationBadge({ value }: { value: number }) {
+function VariationBadge({ value, hasData }: { value: number; hasData: boolean }) {
+  if (!hasData) {
+    return <span className="text-muted-foreground">Sem dados no período</span>;
+  }
+
   const isPositive = value >= 0;
   return (
     <span className={isPositive ? "text-green-600" : "text-red-600"}>
@@ -58,7 +62,10 @@ export function BillingStatsCards({ data }: BillingStatsCardsProps) {
         <CardHeader>
           <CardTitle>Receita do Mês</CardTitle>
           <CardDescription>
-            <VariationBadge value={variations.monthRevenue} />
+            <VariationBadge
+              value={variations.monthRevenue}
+              hasData={data.monthRevenue > 0 || data.lastMonth.monthRevenue > 0}
+            />
           </CardDescription>
           <CardAction>
             <TrendingUp className="text-muted-foreground/50 size-4 lg:size-6" />
@@ -94,7 +101,10 @@ export function BillingStatsCards({ data }: BillingStatsCardsProps) {
         <CardHeader>
           <CardTitle>Taxa de Conclusão</CardTitle>
           <CardDescription>
-            <VariationBadge value={variations.completionRate} />
+            <VariationBadge
+              value={variations.completionRate}
+              hasData={data.completionRate > 0 || data.lastMonth.completionRate > 0}
+            />
           </CardDescription>
           <CardAction>
             <CheckCircle className="text-muted-foreground/50 size-4 lg:size-6" />

@@ -27,11 +27,14 @@ export async function AppointmentsTableServer({
     getClientsForSelect(userId),
   ]);
 
+  const hasFilters = Boolean(barberId || clientId || startDate || endDate);
+
   return (
     <AppointmentsTableClient
       data={data}
       barbers={barbers}
       clients={clients}
+      hasFilters={hasFilters}
     />
   );
 }

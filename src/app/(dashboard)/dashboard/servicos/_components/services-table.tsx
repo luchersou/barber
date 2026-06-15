@@ -17,5 +17,7 @@ export async function ServicesTableServer({
 
   const data = await getServicesTable(userId, { page, search, active });
 
-  return <ServicesTableClient data={data} />;
+  const hasFilters = Boolean(search || active !== undefined);
+
+  return <ServicesTableClient data={data} hasFilters={hasFilters} />;
 }

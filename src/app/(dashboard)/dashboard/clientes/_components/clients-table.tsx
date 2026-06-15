@@ -15,5 +15,7 @@ export async function ClientsTableServer({
 
   const data = await getClients(userId, { page, search });
 
-  return <ClientsTableClient data={data} />;
+  const hasFilters = Boolean(search);
+
+  return <ClientsTableClient data={data} hasFilters={hasFilters} />;
 }
