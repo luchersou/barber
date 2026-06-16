@@ -22,10 +22,7 @@ async function buildAppointmentData(
 
   const validated = result.data;
 
-  const [hours, minutes] = validated.time.split(":").map(Number);
-
-  const appointmentDate = new Date(validated.date);
-  appointmentDate.setHours(hours, minutes, 0, 0);
+  const appointmentDate = new Date(`${validated.date}T${validated.time}:00`);
 
   const [client, barber, services] = await Promise.all([
     prisma.client.findFirst({
@@ -213,7 +210,7 @@ export async function updateAppointmentDate(id: string, date: string, time: stri
   const { userId } = await getUser();
 
   const [hours, minutes] = time.split(":").map(Number);
-  const appointmentDate = new Date(date);
+  const appointmentDate = new Date(`${date}T${time}:00`);
   appointmentDate.setHours(hours, minutes, 0, 0);
 
   await prisma.appointment.update({

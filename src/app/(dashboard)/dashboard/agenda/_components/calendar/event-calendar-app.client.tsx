@@ -45,7 +45,13 @@ export function EventCalendarApp({
   barbers,
   services,
 }: EventCalendarAppProps) {
-  const [optimisticEvents, dispatchOptimistic] = useOptimistic(initialEvents, eventsReducer);
+  const localEvents = initialEvents.map((event) => ({
+    ...event,
+    start: new Date(event.start),
+    end: new Date(event.end),
+  }));
+
+  const [optimisticEvents, dispatchOptimistic] = useOptimistic(localEvents, eventsReducer);
   const [, startTransition] = useTransition();
 
   const handleAppointmentSave = async (data: CreateAppointmentInput & { id?: string }) => {
@@ -55,8 +61,7 @@ export function EventCalendarApp({
     const totalDuration = selectedServices.reduce((acc, s) => acc + s.duration, 0);
 
     const [hours, minutes] = data.time.split(":").map(Number);
-    const start = new Date(data.date);
-    start.setHours(hours, minutes, 0, 0);
+    const start = new Date(`${data.date}T${data.time}:00`);
     const end = new Date(start.getTime() + totalDuration * 60 * 1000);
 
     const calendarEvent: CalendarEvent = {
@@ -89,7 +94,7 @@ export function EventCalendarApp({
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
     startTransition(async () => {
       dispatchOptimistic({ type: "update", event: updatedEvent });
-      const dateStr = updatedEvent.start.toISOString().split("T")[0];
+      const dateStr = `${updatedEvent.start.getFullYear()}-${String(updatedEvent.start.getMonth() + 1).padStart(2, "0")}-${String(updatedEvent.start.getDate()).padStart(2, "0")}`;
       const timeStr = formatTime(updatedEvent.start);
       await updateAppointmentDate(updatedEvent.id, dateStr, timeStr);
     });
