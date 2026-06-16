@@ -14,11 +14,12 @@ interface BillingPageProps {
     page?: string;
     startDate?: string;
     endDate?: string;
+    timezone?: string;
   }>;
 }
 
 export default async function BillingPage({ searchParams }: BillingPageProps) {
-  const { page, startDate, endDate } = await searchParams;
+  const { page, startDate, endDate, timezone } = await searchParams;
 
   return (
     <div className="space-y-6 p-6">
@@ -47,6 +48,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
           page={page ? Number(page) : undefined}
           startDate={startDate}
           endDate={endDate}
+          timezone={timezone}
         />
       </Suspense>
     </div>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
+import { fromZonedTime } from "date-fns-tz";
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
@@ -187,9 +188,11 @@ export async function getBillingTransactions(
     page?: number;
     startDate?: string;
     endDate?: string;
+    timezone?: string;
   }
 ): Promise<BillingTransactionsResponse> {
-  const { page = 1, startDate, endDate } = params;
+  const { page = 1, startDate, endDate, timezone = "UTC" } = params;
+  console.log("startDate:", startDate, "endDate:", endDate, "timezone:", timezone);
 
   const where = {
     userId,
@@ -197,9 +200,17 @@ export async function getBillingTransactions(
     ...(startDate || endDate
       ? {
           date: {
-            ...(startDate && { gte: new Date(startDate.split("T")[0]) }),
+            ...(startDate && {
+              gte: fromZonedTime(
+                `${startDate.split("T")[0]}T00:00:00`,
+                timezone
+              ),
+            }),
             ...(endDate && {
-              lte: new Date(endDate.split("T")[0] + "T23:59:59.999Z"),
+              lte: fromZonedTime(
+                `${endDate.split("T")[0]}T23:59:59.999`,
+                timezone
+              ),
             }),
           },
         }

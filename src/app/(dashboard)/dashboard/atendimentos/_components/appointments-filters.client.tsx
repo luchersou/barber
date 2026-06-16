@@ -57,6 +57,7 @@ export function AppointmentsFilters({
   function handleDateRange(range: DateRange | undefined) {
     setDate(range);
     const params = new URLSearchParams(searchParams.toString());
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     if (range?.from) {
       params.set("startDate", range.from.toISOString());
@@ -70,6 +71,7 @@ export function AppointmentsFilters({
       params.delete("endDate");
     }
 
+    params.set("timezone", timezone);
     params.delete("page");
     router.push(`?${params.toString()}`);
   }
