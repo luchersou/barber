@@ -53,13 +53,17 @@ export default async function RootLayout({
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange>
-          <ActiveThemeProvider initialTheme={themeSettings}>
-            <ClerkProvider>
+          <ClerkProvider
+            signInForceRedirectUrl="/dashboard"
+            signUpForceRedirectUrl="/dashboard"
+            afterSignOutUrl="/sign-in"
+          >
+            <ActiveThemeProvider initialTheme={themeSettings}>
               {children}
-            </ClerkProvider>
-            <Toaster position="top-center" richColors />
-            <NextTopLoader color="var(--primary)" showSpinner={false} height={2} shadow-sm="none" />
-          </ActiveThemeProvider>
+              <Toaster position="top-center" richColors />
+              <NextTopLoader color="var(--primary)" showSpinner={false} height={2} shadow-sm="none" />
+            </ActiveThemeProvider>
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
