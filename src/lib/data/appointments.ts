@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { fromZonedTime } from "date-fns-tz";
 import { AppointmentsResponse } from "@/types/appointments";
 
 const APPOINTMENTS_PER_PAGE = 10;
@@ -11,9 +12,10 @@ export async function getAppointments(
     clientId?: string;
     startDate?: string;
     endDate?: string;
+    timezone?: string;
   }
 ): Promise<AppointmentsResponse> {
-  const { page = 1, barberId, clientId, startDate, endDate } = params;
+  const { page = 1, barberId, clientId, startDate, endDate, timezone = "UTC" } = params;
 
   const where = {
     userId,
@@ -22,8 +24,12 @@ export async function getAppointments(
     ...(startDate || endDate
       ? {
           date: {
-            ...(startDate && { gte: new Date(startDate.split("T")[0]) }),
-            ...(endDate && { lte: new Date(endDate.split("T")[0] + "T23:59:59.999Z") }),
+            ...(startDate && {
+              gte: fromZonedTime(`${startDate}T00:00:00`, timezone),
+            }),
+            ...(endDate && {
+              lte: fromZonedTime(`${endDate}T23:59:59.999`, timezone),
+            }),
           },
         }
       : {}),

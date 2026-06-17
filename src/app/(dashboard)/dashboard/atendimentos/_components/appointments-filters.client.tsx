@@ -60,13 +60,17 @@ export function AppointmentsFilters({
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     if (range?.from) {
-      params.set("startDate", range.from.toISOString());
+      const from = range.from;
+      const dateStr = `${from.getFullYear()}-${String(from.getMonth() + 1).padStart(2, "0")}-${String(from.getDate()).padStart(2, "0")}`;
+      params.set("startDate", dateStr);
     } else {
       params.delete("startDate");
     }
 
     if (range?.to) {
-      params.set("endDate", range.to.toISOString());
+      const to = range.to;
+      const dateStr = `${to.getFullYear()}-${String(to.getMonth() + 1).padStart(2, "0")}-${String(to.getDate()).padStart(2, "0")}`;
+      params.set("endDate", dateStr);
     } else {
       params.delete("endDate");
     }

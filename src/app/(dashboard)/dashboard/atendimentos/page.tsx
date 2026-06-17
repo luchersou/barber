@@ -9,13 +9,14 @@ interface AppointmentsPageProps {
     clientId?: string;
     startDate?: string;
     endDate?: string;
+    timezone?: string;
   }>;
 }
 
 export default async function AppointmentsPage({
   searchParams,
 }: AppointmentsPageProps) {
-  const { page, barberId, clientId, startDate, endDate } = await searchParams;
+  const { page, barberId, clientId, startDate, endDate, timezone } = await searchParams;
 
   return (
     <div className="space-y-6 p-6">
@@ -32,6 +33,7 @@ export default async function AppointmentsPage({
           clientId={clientId}
           startDate={startDate}
           endDate={endDate}
+          timezone={timezone}
         />
       </Suspense>
     </div>
