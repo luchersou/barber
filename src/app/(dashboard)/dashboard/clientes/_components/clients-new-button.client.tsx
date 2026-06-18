@@ -14,23 +14,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { createClient } from "@/actions/clients";
 
 export function ClientsNewButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function handleClose() {
     setIsOpen(false);
     setName("");
     setPhone("");
     setNotes("");
+    setError(null);
   }
 
   async function handleSave() {
-    // TODO: await createClient({ name, phone, notes })
-    handleClose();
+    try {
+      setIsLoading(true);
+      setError(null);
+      await createClient({ name, phone, notes });
+      handleClose();
+    } catch {
+      setError("Erro ao criar cliente. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -77,11 +89,20 @@ export function ClientsNewButton() {
               />
             </div>
           </div>
+
+          {error && (
+            <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
+              {error}
+            </div>
+          )}
+
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose}>
+            <Button variant="outline" onClick={handleClose} disabled={isLoading}>
               Cancelar
             </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? "Salvando..." : "Salvar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
