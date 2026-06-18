@@ -6,7 +6,7 @@ import "dotenv/config";
 const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL });
 const prisma = new PrismaClient({ adapter });
 
-const USER_ID = "cmpxezcld000a4kvkzahd03sz";
+const USER_ID = "cmqiwanr6000knwvk79vrsp8n";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -84,15 +84,16 @@ async function main() {
     { name: "Rodrigo Farias",     phone: "41991110015" },
   ];
 
-  const clients = await Promise.all(
-    clientData.map((c) =>
-      prisma.client.upsert({
-        where: { id: `client-${c.phone}` },
-        update: {},
-        create: { id: `client-${c.phone}`, userId: USER_ID, ...c },
-      })
-    )
-  );
+  await prisma.client.createMany({
+    data: clientData.map((c) => ({
+      id: `client-${c.phone}`,
+      userId: USER_ID,
+      active: true,
+      ...c,
+    })),
+    skipDuplicates: true,
+  });
+  const clients = await prisma.client.findMany({ where: { userId: USER_ID } });
 
   // 3. barbers
   const barberData = [
@@ -101,15 +102,16 @@ async function main() {
     { name: "Fernando Dias",   phone: "41992220003" },
   ];
 
-  const barbers = await Promise.all(
-    barberData.map((b) =>
-      prisma.barber.upsert({
-        where: { id: `barber-${b.phone}` },
-        update: {},
-        create: { id: `barber-${b.phone}`, userId: USER_ID, ...b },
-      })
-    )
-  );
+  await prisma.barber.createMany({
+    data: barberData.map((b) => ({
+      id: `barber-${b.phone}`,
+      userId: USER_ID,
+      active: true,
+      ...b,
+    })),
+    skipDuplicates: true,
+  });
+  const barbers = await prisma.barber.findMany({ where: { userId: USER_ID } });
 
   // 4. services
   const serviceData = [
@@ -125,15 +127,16 @@ async function main() {
     { name: "Corte + barba + sobrancelha",price: 70, duration: 65 },
   ];
 
-  const services = await Promise.all(
-    serviceData.map((s, i) =>
-      prisma.service.upsert({
-        where: { id: `service-${i + 1}` },
-        update: {},
-        create: { id: `service-${i + 1}`, userId: USER_ID, ...s },
-      })
-    )
-  );
+  await prisma.service.createMany({
+    data: serviceData.map((s, i) => ({
+      id: `service-${i + 1}`,
+      userId: USER_ID,
+      active: true,
+      ...s,
+    })),
+    skipDuplicates: true,
+  });
+  const services = await prisma.service.findMany({ where: { userId: USER_ID } });
 
   // 5. appointments – batch insert
   console.log("📅 Generating appointments...");
