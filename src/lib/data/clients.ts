@@ -32,6 +32,7 @@ export async function getClients(
         id: true,
         name: true,
         phone: true,
+        notes: true,
         createdAt: true,
         appointments: {
           orderBy: { date: "desc" },
@@ -53,6 +54,7 @@ export async function getClients(
       id: c.id,
       name: c.name,
       phone: c.phone,
+      notes: c.notes,
       createdAt: c.createdAt,
       lastAppointmentDate: c.appointments[0]?.date ?? null,
       lastAppointmentStatus: c.appointments[0]?.status ?? null,

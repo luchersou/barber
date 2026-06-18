@@ -4,6 +4,7 @@ export type Client = {
   id: string;
   name: string;
   phone: string | null;
+  notes: string | null;
   createdAt: Date;
   lastAppointmentDate: Date | null;
   lastAppointmentStatus: AppointmentStatus | null;
