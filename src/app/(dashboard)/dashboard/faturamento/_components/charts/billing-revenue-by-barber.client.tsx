@@ -81,7 +81,7 @@ export function BillingRevenueByBarberClient({ data }: BillingRevenueByBarberCli
                 />
                 <LabelList
                   dataKey="revenue"
-                  position="right"
+                  position="insideRight"
                   offset={8}
                   className="fill-foreground"
                   fontSize={12}
