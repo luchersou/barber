@@ -2,6 +2,7 @@ import { getUser } from "@/lib/auth/auth";
 import { getAppointments } from "@/lib/data/appointments";
 import { getBarbersForSelect } from "@/lib/data/barbers";
 import { getClientsForSelect } from "@/lib/data/clients";
+import { getServicesForSelect } from "@/lib/data/services";
 import { AppointmentsTableClient } from "./appointments-table.client";
 
 interface AppointmentsTableServerProps {
@@ -23,10 +24,11 @@ export async function AppointmentsTableServer({
 }: AppointmentsTableServerProps) {
   const { userId } = await getUser();
 
-  const [data, barbers, clients] = await Promise.all([
+  const [data, barbers, clients, services] = await Promise.all([
     getAppointments(userId, { page, barberId, clientId, startDate, endDate, timezone }),
     getBarbersForSelect(userId),
     getClientsForSelect(userId),
+    getServicesForSelect(userId),
   ]);
 
   const hasFilters = Boolean(barberId || clientId || startDate || endDate);
@@ -36,6 +38,7 @@ export async function AppointmentsTableServer({
       data={data}
       barbers={barbers}
       clients={clients}
+      services={services}
       hasFilters={hasFilters}
     />
   );

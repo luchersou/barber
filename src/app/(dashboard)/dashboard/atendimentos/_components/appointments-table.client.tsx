@@ -18,6 +18,7 @@ import { appointmentsColumns } from "./appointments-columns";
 import { AppointmentsFilters } from "./appointments-filters.client";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CalendarX, CalendarSearch } from "lucide-react";
 import { TablePagination } from "@/components/shared/pagination";
@@ -26,14 +27,16 @@ interface AppointmentsTableClientProps {
   data: AppointmentsResponse;
   barbers: BarberSelect[];
   clients: ClientSelect[];
+  services: ServiceSelect[];
   hasFilters: boolean;
 }
 
-export function AppointmentsTableClient({ data, barbers, clients, hasFilters }: AppointmentsTableClientProps) {
+export function AppointmentsTableClient({ data, barbers, clients, services, hasFilters }: AppointmentsTableClientProps) {
   const table = useReactTable({
     data: data.appointments,
     columns: appointmentsColumns,
     getCoreRowModel: getCoreRowModel(),
+    meta: { barbers, clients, services },
   });
 
   const isEmpty = data.appointments.length === 0;

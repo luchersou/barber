@@ -2,6 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Appointment } from "@/types/appointments";
+import { BarberSelect } from "@/types/barbers";
+import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { AppointmentsActions } from "./appointments-actions.client";
 
@@ -61,7 +64,21 @@ export const appointmentsColumns: ColumnDef<Appointment>[] = [
     },
   },
   {
-    id: "actions",
-    cell: ({ row }) => <AppointmentsActions appointment={row.original} />,
+  id: "actions",
+  cell: ({ row, table }) => {
+      const { barbers, clients, services } = table.options.meta as {
+        barbers: BarberSelect[];
+        clients: ClientSelect[];
+        services: ServiceSelect[];
+      };
+      return (
+        <AppointmentsActions
+          appointment={row.original}
+          barbers={barbers}
+          clients={clients}
+          services={services}
+        />
+      );
+    },
   },
 ];
