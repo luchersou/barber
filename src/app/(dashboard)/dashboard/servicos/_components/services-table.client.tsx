@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/table";
 import { ServicesResponse } from "@/types/services";
 import { servicesColumns } from "./services-columns";
-import { ServicesPagination } from "./services-pagination.client";
 import { ServicesFilters } from "./services-filters.client";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Sparkles, SearchX } from "lucide-react";
+import { TablePagination } from "@/components/shared/pagination";
 
 interface ServicesTableClientProps {
   data: ServicesResponse;
@@ -86,7 +86,7 @@ export function ServicesTableClient({ data, hasFilters }: ServicesTableClientPro
               </TableBody>
             </Table>
           </div>
-          <ServicesPagination
+          <TablePagination
             totalPages={data.totalPages}
             currentPage={data.currentPage}
           />

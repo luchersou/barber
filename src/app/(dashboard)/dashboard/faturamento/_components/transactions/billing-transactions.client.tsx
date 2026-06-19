@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/table";
 import { BillingTransactionsResponse } from "@/types/billing";
 import { billingTransactionsColumns } from "./billing-transactions-columns";
-import { BillingTransactionsPagination } from "./billing-transactions-pagination.client";
 import { BillingTransactionsFilters } from "./billing-transactions-filters.client";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Receipt, SearchX } from "lucide-react";
+import { TablePagination } from "@/components/shared/pagination";
 
 interface BillingTransactionsClientProps {
   data: BillingTransactionsResponse;
@@ -86,7 +86,7 @@ export function BillingTransactionsClient({ data, hasFilters }: BillingTransacti
               </TableBody>
             </Table>
           </div>
-          <BillingTransactionsPagination
+          <TablePagination
             totalPages={data.totalPages}
             currentPage={data.currentPage}
           />

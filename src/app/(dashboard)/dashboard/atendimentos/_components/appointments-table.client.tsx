@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/table";
 import { AppointmentsResponse } from "@/types/appointments";
 import { appointmentsColumns } from "./appointments-columns";
-import { AppointmentsPagination } from "./appointments-pagination.client";
 import { AppointmentsFilters } from "./appointments-filters.client";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
 import { EmptyState } from "@/components/shared/empty-state";
 import { CalendarX, CalendarSearch } from "lucide-react";
+import { TablePagination } from "@/components/shared/pagination";
 
 interface AppointmentsTableClientProps {
   data: AppointmentsResponse;
@@ -90,7 +90,7 @@ export function AppointmentsTableClient({ data, barbers, clients, hasFilters }: 
               </TableBody>
             </Table>
           </div>
-          <AppointmentsPagination
+          <TablePagination
             totalPages={data.totalPages}
             currentPage={data.currentPage}
           />

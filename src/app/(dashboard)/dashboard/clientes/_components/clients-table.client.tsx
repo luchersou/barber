@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/table";
 import { ClientsResponse } from "@/types/clients";
 import { clientsColumns } from "./clients-columns";
-import { ClientsPagination } from "./clients-pagination.client";
+import { TablePagination } from "@/components/shared/pagination";
 import { ClientsFilters } from "./clients-filters.client";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Users, SearchX } from "lucide-react";
@@ -86,7 +86,7 @@ export function ClientsTableClient({ data, hasFilters }: ClientsTableClientProps
               </TableBody>
             </Table>
           </div>
-          <ClientsPagination
+          <TablePagination
             totalPages={data.totalPages}
             currentPage={data.currentPage}
           />

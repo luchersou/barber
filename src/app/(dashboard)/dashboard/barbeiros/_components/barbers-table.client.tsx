@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/table";
 import { BarbersResponse } from "@/types/barbers";
 import { barbersColumns } from "./barbers-columns";
-import { BarbersPagination } from "./barbers-pagination.client";
 import { BarbersFilters } from "./barbers-filters.client";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Scissors, SearchX } from "lucide-react";
+import { TablePagination } from "@/components/shared/pagination";
 
 interface BarbersTableClientProps {
   data: BarbersResponse;
@@ -86,7 +86,7 @@ export function BarbersTableClient({ data, hasFilters }: BarbersTableClientProps
               </TableBody>
             </Table>
           </div>
-          <BarbersPagination
+          <TablePagination
             totalPages={data.totalPages}
             currentPage={data.currentPage}
           />
