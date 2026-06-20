@@ -15,8 +15,11 @@ import { DEFAULT_THEME } from "@/lib/themes/themes";
 import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "BarberApp",
+  title: "Tio Dog Barbearia",
   description: "Sistema de gestão para barbearias",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default async function RootLayout({
