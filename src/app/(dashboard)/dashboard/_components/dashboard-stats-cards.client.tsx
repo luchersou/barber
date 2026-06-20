@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { DashboardStats } from "@/types/dashboard";
 
-interface SummaryCardsProps {
+interface DashboardStatsCardsProps {
   data: DashboardStats;
 }
 
@@ -30,7 +30,7 @@ function VariationBadge({ value }: { value: number }) {
   );
 }
 
-export function SummaryCards({ data }: SummaryCardsProps) {
+export function DashboardStatsCards({ data }: DashboardStatsCardsProps) {
   const variations = {
     monthRevenue: calcVariation(data.monthRevenue, data.lastMonth.monthRevenue),
     monthAppointments: calcVariation(data.monthAppointments, data.lastMonth.monthAppointments),

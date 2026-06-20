@@ -1,10 +1,10 @@
 import { getUser } from "@/lib/auth/auth";
 import { getDashboardStats } from "@/lib/data/dashboard";
-import { SummaryCards } from "./summary-cards.client";
+import { DashboardStatsCards } from "./dashboard-stats-cards.client";
 
-export async function SummaryCardsServer() {
+export async function DashboardStatsCardsServer() {
   const { userId } = await getUser();
   const data = await getDashboardStats(userId);
 
-  return <SummaryCards data={data} />;
+  return <DashboardStatsCards data={data} />;
 }

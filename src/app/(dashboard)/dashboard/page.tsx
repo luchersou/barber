@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SummaryCardsServer } from "./_components/summary-cards";
+import { DashboardStatsCardsServer } from "./_components/dashboard-stats-cards";
 import { RevenueChartServer } from "./_components/revenue-chart";
 import { TopServicesServer } from "./_components/top-services";
 import { TopBarbersRevenueServer } from "./_components/top-barbers-revenue";
@@ -15,7 +15,7 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">Bem-vindo ao painel.</p>
       </div>
       <Suspense fallback={<StatsSkeleton />}>
-        <SummaryCardsServer />
+        <DashboardStatsCardsServer />
       </Suspense>
       <Suspense fallback={<RevenueChartSkeleton />}>
         <RevenueChartServer />
