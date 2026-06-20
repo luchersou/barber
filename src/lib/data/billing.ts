@@ -1,15 +1,36 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
-import { fromZonedTime } from "date-fns-tz";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
-export async function getBillingStats(userId: string): Promise<BillingStats> {
+export async function getBillingStats(userId: string, timezone: string = "UTC"): Promise<BillingStats> {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+  const nowInTZ = toZonedTime(now, timezone);
+
+  const startOfMonth = fromZonedTime(
+    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth(), 1, 0, 0, 0, 0),
+    timezone
+  );
+
+  const startOfLastMonth = fromZonedTime(
+    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 1, 1, 0, 0, 0, 0),
+    timezone
+  );
+
+  const equivalentEndOfLastMonth = fromZonedTime(
+    new Date(
+      nowInTZ.getFullYear(),
+      nowInTZ.getMonth() - 1,
+      nowInTZ.getDate(),
+      nowInTZ.getHours(),
+      nowInTZ.getMinutes(),
+      nowInTZ.getSeconds(),
+      nowInTZ.getMilliseconds(),
+    ),
+    timezone
+  );
 
   const [
     totalRevenue,
@@ -41,7 +62,7 @@ export async function getBillingStats(userId: string): Promise<BillingStats> {
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        date: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
       _sum: { totalPrice: true },
     }),
@@ -50,14 +71,14 @@ export async function getBillingStats(userId: string): Promise<BillingStats> {
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        date: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
     }),
 
     prisma.appointment.count({
       where: {
         userId,
-        date: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
     }),
   ]);
@@ -88,9 +109,13 @@ export async function getBillingStats(userId: string): Promise<BillingStats> {
   };
 }
 
-export async function getBillingRevenueChart(userId: string): Promise<BillingRevenueChart[]> {
+export async function getBillingRevenueChart(userId: string, timezone: string = "UTC"): Promise<BillingRevenueChart[]> {
   const now = new Date();
-  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+  const nowInTZ = toZonedTime(now, timezone);
+  const twelveMonthsAgo = fromZonedTime(
+    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11, 1, 0, 0, 0, 0),
+    timezone
+  );
 
   const appointments = await prisma.appointment.findMany({
     where: {
@@ -107,16 +132,20 @@ export async function getBillingRevenueChart(userId: string): Promise<BillingRev
   const revenueMap: Record<string, number> = {};
 
   for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - 11 + i, 1);
+    const d = toZonedTime(
+      fromZonedTime(
+        new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11 + i, 1),
+        timezone
+      ),
+      timezone
+    );
     const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     revenueMap[key] = 0;
   }
 
   for (const appointment of appointments) {
-    const key = appointment.date.toLocaleDateString("pt-BR", {
-      month: "short",
-      year: "numeric",
-    });
+    const d = toZonedTime(appointment.date, timezone);
+    const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     if (key in revenueMap) {
       revenueMap[key] += Number(appointment.totalPrice);
     }

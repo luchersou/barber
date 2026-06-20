@@ -30,10 +30,10 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
         </p>
       </div>
       <Suspense fallback={<StatsSkeleton />}>
-        <BillingStatsServer />
+        <BillingStatsServer timezone={timezone} />
       </Suspense>
       <Suspense fallback={<RevenueChartSkeleton />}>
-        <BillingRevenueChartServer />
+        <BillingRevenueChartServer timezone={timezone} />
       </Suspense>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Suspense fallback={<ChartSkeleton />}>
