@@ -18,6 +18,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { RevenueChart as RevenueChartData } from "@/types/dashboard";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const chartConfig = {
   revenue: {
@@ -31,6 +32,8 @@ interface RevenueChartProps {
 }
 
 export function RevenueChart({ data }: RevenueChartProps) {
+  const isEmpty = data.length === 0 || data.every((d) => d.revenue === 0);
+
   return (
     <Card>
       <CardHeader>
@@ -38,35 +41,43 @@ export function RevenueChart({ data }: RevenueChartProps) {
         <CardDescription>Últimos 30 dias</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="max-h-[250px] w-full">
-          <AreaChart
-            accessibilityLayer
-            data={data}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
-            />
-            <Area
-              dataKey="revenue"
-              type="natural"
-              fill="var(--color-revenue)"
-              fillOpacity={0.4}
-              stroke="var(--color-revenue)"
-            />
-          </AreaChart>
-        </ChartContainer>
+        {isEmpty ? (
+          <EmptyState
+            icon={TrendingUp}
+            title="Sem dados de receita"
+            description="A receita dos últimos 30 dias aparecerá aqui conforme os atendimentos forem concluídos."
+          />
+        ) : (
+          <ChartContainer config={chartConfig} className="max-h-[250px] w-full">
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{
+                left: 12,
+                right: 12,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Area
+                dataKey="revenue"
+                type="natural"
+                fill="var(--color-revenue)"
+                fillOpacity={0.4}
+                stroke="var(--color-revenue)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter>
         <div className="flex w-full items-start gap-2 text-sm">

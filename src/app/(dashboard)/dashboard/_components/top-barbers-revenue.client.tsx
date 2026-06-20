@@ -16,6 +16,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { TopBarberRevenue } from "@/types/dashboard";
+import { Users } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 
 interface TopBarbersRevenueChartProps {
   data: TopBarberRevenue[];
@@ -28,6 +30,8 @@ export function TopBarbersRevenueChart({ data }: TopBarbersRevenueChartProps) {
     revenue: item.revenue,
     fill: `var(--color-${item.barber.toLowerCase().replace(/\s+/g, "-")})`,
   }));
+
+  const isEmpty = data.length === 0;
 
   const chartConfig: ChartConfig = {
     revenue: { label: "Receita" },
@@ -49,27 +53,35 @@ export function TopBarbersRevenueChart({ data }: TopBarbersRevenueChartProps) {
         <CardDescription>Agendamentos concluídos</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
-        >
-          <PieChart>
-            <ChartTooltip
-              content={<ChartTooltipContent nameKey="revenue" hideLabel />}
-            />
-            <Pie data={chartData} dataKey="revenue">
-              <LabelList
-                dataKey="barber"
-                className="fill-background"
-                stroke="none"
-                fontSize={12}
-                formatter={(value) =>
-                  String(chartConfig[value as string]?.label ?? value)
-                }
+        {isEmpty ? (
+          <EmptyState
+            icon={Users}
+            title="Sem dados de barbeiros"
+            description="A receita por barbeiro aparecerá aqui conforme os atendimentos forem concluídos."
+          />
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-background"
+          >
+            <PieChart>
+              <ChartTooltip
+                content={<ChartTooltipContent nameKey="revenue" hideLabel />}
               />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+              <Pie data={chartData} dataKey="revenue">
+                <LabelList
+                  dataKey="barber"
+                  className="fill-background"
+                  stroke="none"
+                  fontSize={12}
+                  formatter={(value) =>
+                    String(chartConfig[value as string]?.label ?? value)
+                  }
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="leading-none text-muted-foreground">
