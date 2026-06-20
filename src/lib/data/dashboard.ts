@@ -3,35 +3,12 @@ import { AppointmentStatus } from "@/generated/prisma/client";
 import { DashboardStats, RevenueChart, TopBarberRevenue, AppointmentsByStatus, TopService } from "@/types/dashboard";
 import { startOfDay, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { getMonthDateRanges } from "../date-ranges";
 
 const REVENUE_CHART_DAYS = 30;
 
 export async function getDashboardStats(userId: string, timezone: string = "UTC"): Promise<DashboardStats> {
-  const now = new Date();
-  const nowInTZ = toZonedTime(now, timezone);
-
-  const startOfMonth = fromZonedTime(
-    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth(), 1, 0, 0, 0, 0),
-    timezone
-  );
-
-  const startOfLastMonth = fromZonedTime(
-    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 1, 1, 0, 0, 0, 0),
-    timezone
-  );
-
-  const equivalentEndOfLastMonth = fromZonedTime(
-    new Date(
-      nowInTZ.getFullYear(),
-      nowInTZ.getMonth() - 1,
-      nowInTZ.getDate(),
-      nowInTZ.getHours(),
-      nowInTZ.getMinutes(),
-      nowInTZ.getSeconds(),
-      nowInTZ.getMilliseconds(),
-    ),
-    timezone
-  );
+  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges(timezone);
 
   const [
     totalClients,

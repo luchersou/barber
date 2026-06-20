@@ -2,35 +2,12 @@ import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { getMonthDateRanges } from "@/lib/date-ranges";
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
 export async function getBillingStats(userId: string, timezone: string = "UTC"): Promise<BillingStats> {
-  const now = new Date();
-  const nowInTZ = toZonedTime(now, timezone);
-
-  const startOfMonth = fromZonedTime(
-    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth(), 1, 0, 0, 0, 0),
-    timezone
-  );
-
-  const startOfLastMonth = fromZonedTime(
-    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 1, 1, 0, 0, 0, 0),
-    timezone
-  );
-
-  const equivalentEndOfLastMonth = fromZonedTime(
-    new Date(
-      nowInTZ.getFullYear(),
-      nowInTZ.getMonth() - 1,
-      nowInTZ.getDate(),
-      nowInTZ.getHours(),
-      nowInTZ.getMinutes(),
-      nowInTZ.getSeconds(),
-      nowInTZ.getMilliseconds(),
-    ),
-    timezone
-  );
+  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges(timezone);
 
   const [
     totalRevenue,
