@@ -95,93 +95,95 @@ export function AppointmentsNewButton({
             </DialogDescription>
           </DialogHeader>
 
-          {error && (
-            <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
-              {error}
-            </div>
-          )}
-
-          <div className="grid gap-4 py-4">
-            <div className="*:not-first:mt-1.5">
-              <Label>Cliente</Label>
-              <Select value={clientId} onValueChange={setClientId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um cliente" />
-                </SelectTrigger>
-                <SelectContent>
-                  {clients.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="*:not-first:mt-1.5">
-              <Label>Barbeiro</Label>
-              <Select value={barberId} onValueChange={setBarberId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um barbeiro" />
-                </SelectTrigger>
-                <SelectContent>
-                  {barbers.map((b) => (
-                    <SelectItem key={b.id} value={b.id}>
-                      {b.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="*:not-first:mt-1.5">
-              <Label>Serviços</Label>
-              <div className="mt-2 space-y-2">
-                {services.map((s) => (
-                  <div key={s.id} className="flex items-center gap-2">
-                    <Checkbox
-                      id={`new-${s.id}`}
-                      checked={serviceIds.includes(s.id)}
-                      onCheckedChange={() => toggleService(s.id)}
-                    />
-                    <label htmlFor={`new-${s.id}`} className="text-sm cursor-pointer">
-                      {s.name} — R$ {s.price.toFixed(2)}
-                    </label>
-                  </div>
-                ))}
+          <div className="overflow-y-auto max-h-[60vh] pr-1">
+            {error && (
+              <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
+                {error}
               </div>
-            </div>
+            )}
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4 py-4">
               <div className="*:not-first:mt-1.5">
-                <Label htmlFor="date">Data</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                <Label>Cliente</Label>
+                <Select value={clientId} onValueChange={setClientId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um cliente" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clients.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="*:not-first:mt-1.5">
+                <Label>Barbeiro</Label>
+                <Select value={barberId} onValueChange={setBarberId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um barbeiro" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {barbers.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="*:not-first:mt-1.5">
+                <Label>Serviços</Label>
+                <div className="mt-2 space-y-2">
+                  {services.map((s) => (
+                    <div key={s.id} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`new-${s.id}`}
+                        checked={serviceIds.includes(s.id)}
+                        onCheckedChange={() => toggleService(s.id)}
+                      />
+                      <label htmlFor={`new-${s.id}`} className="text-sm cursor-pointer">
+                        {s.name} — R$ {s.price.toFixed(2)}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="*:not-first:mt-1.5">
+                  <Label htmlFor="date">Data</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
+                <div className="*:not-first:mt-1.5">
+                  <Label htmlFor="time">Horário</Label>
+                  <Input
+                    id="time"
+                    type="time"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="*:not-first:mt-1.5">
+                <Label htmlFor="notes">Observações</Label>
+                <Textarea
+                  id="notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Observações sobre o atendimento..."
+                  rows={3}
                 />
               </div>
-              <div className="*:not-first:mt-1.5">
-                <Label htmlFor="time">Horário</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="*:not-first:mt-1.5">
-              <Label htmlFor="notes">Observações</Label>
-              <Textarea
-                id="notes"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Observações sobre o atendimento..."
-                rows={3}
-              />
             </div>
           </div>
 
