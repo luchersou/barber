@@ -1,14 +1,37 @@
 import { prisma } from "@/lib/prisma";
 import { AppointmentStatus } from "@/generated/prisma/client";
 import { DashboardStats, RevenueChart, TopBarberRevenue, AppointmentsByStatus, TopService } from "@/types/dashboard";
+import { startOfDay, subDays } from "date-fns";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 const REVENUE_CHART_DAYS = 30;
 
-export async function getDashboardStats(userId: string): Promise<DashboardStats> {
+export async function getDashboardStats(userId: string, timezone: string = "UTC"): Promise<DashboardStats> {
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+  const nowInTZ = toZonedTime(now, timezone);
+
+  const startOfMonth = fromZonedTime(
+    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth(), 1, 0, 0, 0, 0),
+    timezone
+  );
+
+  const startOfLastMonth = fromZonedTime(
+    new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 1, 1, 0, 0, 0, 0),
+    timezone
+  );
+
+  const equivalentEndOfLastMonth = fromZonedTime(
+    new Date(
+      nowInTZ.getFullYear(),
+      nowInTZ.getMonth() - 1,
+      nowInTZ.getDate(),
+      nowInTZ.getHours(),
+      nowInTZ.getMinutes(),
+      nowInTZ.getSeconds(),
+      nowInTZ.getMilliseconds(),
+    ),
+    timezone
+  );
 
   const [
     totalClients,
@@ -22,14 +45,14 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     prisma.client.count({ where: { userId } }),
 
     prisma.appointment.count({
-      where: { userId, createdAt: { gte: startOfMonth } },
+      where: { userId, date: { gte: startOfMonth } },
     }),
 
     prisma.appointment.aggregate({
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        createdAt: { gte: startOfMonth },
+        date: { gte: startOfMonth },
       },
       _sum: { totalPrice: true },
     }),
@@ -38,14 +61,14 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        createdAt: { gte: startOfMonth },
+        date: { gte: startOfMonth },
       },
     }),
 
     prisma.appointment.count({
       where: {
         userId,
-        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
     }),
 
@@ -53,7 +76,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
       _sum: { totalPrice: true },
     }),
@@ -62,7 +85,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       where: {
         userId,
         status: AppointmentStatus.COMPLETED,
-        createdAt: { gte: startOfLastMonth, lte: endOfLastMonth },
+        date: { gte: startOfLastMonth, lte: equivalentEndOfLastMonth },
       },
     }),
   ]);
@@ -80,16 +103,16 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
   };
 }
 
-export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
+export async function getRevenueChart(userId: string, timezone: string = "UTC"): Promise<RevenueChart[]> {
   const now = new Date();
-  const thirtyDaysAgo = new Date(now);
-  thirtyDaysAgo.setDate(now.getDate() - REVENUE_CHART_DAYS);
+  const startDate = startOfDay(subDays(toZonedTime(now, timezone), REVENUE_CHART_DAYS - 1));
+  const startDateUTC = fromZonedTime(startDate, timezone);
 
   const appointments = await prisma.appointment.findMany({
     where: {
       userId,
       status: AppointmentStatus.COMPLETED,
-      date: { gte: thirtyDaysAgo },
+      date: { gte: startDateUTC },
     },
     select: {
       date: true,
@@ -100,23 +123,30 @@ export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
   const revenueMap: Record<string, number> = {};
 
   for (let i = 0; i < REVENUE_CHART_DAYS; i++) {
-    const d = new Date(thirtyDaysAgo);
-    d.setDate(thirtyDaysAgo.getDate() + i);
-    const key = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+    const d = toZonedTime(
+      fromZonedTime(subDays(startDate, -i), timezone),
+      timezone
+    );
+    const key = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
     revenueMap[key] = 0;
   }
 
   for (const appointment of appointments) {
-    const key = appointment.date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+    const d = toZonedTime(appointment.date, timezone);
+    const key = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
     if (key in revenueMap) {
       revenueMap[key] += Number(appointment.totalPrice);
     }
   }
 
-  return Object.entries(revenueMap).map(([date, revenue]) => ({
-    date,
-    revenue,
-  }));
+  return Object.entries(revenueMap)
+    .sort(([a], [b]) => {
+      const [dayA, monthA] = a.split("/").map(Number);
+      const [dayB, monthB] = b.split("/").map(Number);
+      if (monthA !== monthB) return monthA - monthB;
+      return dayA - dayB;
+    })
+    .map(([date, revenue]) => ({ date, revenue }));
 }
 
 export async function getAppointmentsByStatus(userId: string): Promise<AppointmentsByStatus[]> {

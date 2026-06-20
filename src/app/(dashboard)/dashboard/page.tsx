@@ -7,7 +7,15 @@ import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
 import { RevenueChartSkeleton } from "@/components/shared/skeletons/revenue-chart-skeleton";
 import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{
+    timezone?: string;
+  }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const { timezone } = await searchParams;
+
   return (
     <div className="space-y-6 p-6">
       <div>
@@ -15,10 +23,10 @@ export default function DashboardPage() {
         <p className="text-muted-foreground">Bem-vindo ao painel.</p>
       </div>
       <Suspense fallback={<StatsSkeleton />}>
-        <DashboardStatsCardsServer />
+        <DashboardStatsCardsServer timezone={timezone} />
       </Suspense>
       <Suspense fallback={<RevenueChartSkeleton />}>
-        <RevenueChartServer />
+        <RevenueChartServer timezone={timezone} />
       </Suspense>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Suspense fallback={<ChartSkeleton />}>

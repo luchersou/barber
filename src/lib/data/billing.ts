@@ -192,7 +192,6 @@ export async function getBillingTransactions(
   }
 ): Promise<BillingTransactionsResponse> {
   const { page = 1, startDate, endDate, timezone = "UTC" } = params;
-  console.log("startDate:", startDate, "endDate:", endDate, "timezone:", timezone);
 
   const where = {
     userId,
