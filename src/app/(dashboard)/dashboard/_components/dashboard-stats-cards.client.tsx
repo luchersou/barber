@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Calendar, DollarSign, Users } from "lucide-react";
+import { CheckCircle, Calendar, DollarSign, Users, TrendingDown, TrendingUp } from "lucide-react";
 
 import {
   Card,
@@ -23,9 +23,12 @@ function calcVariation(current: number, previous: number): number {
 
 function VariationBadge({ value }: { value: number }) {
   const isPositive = value >= 0;
+  const Icon = isPositive ? TrendingUp : TrendingDown;
+
   return (
-    <span className={isPositive ? "text-green-600" : "text-red-600"}>
-      {isPositive ? "+" : ""}{value}% em relação ao mês anterior
+    <span className={`flex items-center gap-1 ${isPositive ? "text-green-600" : "text-red-600"}`}>
+      <Icon className="h-3 w-3" />
+      {isPositive ? "+" : ""}{value}% vs período equivalente
     </span>
   );
 }
