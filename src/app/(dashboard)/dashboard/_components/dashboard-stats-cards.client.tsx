@@ -11,14 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { DashboardStats } from "@/types/dashboard";
+import { calcVariation } from "@/lib/utils";
 
 interface DashboardStatsCardsProps {
   data: DashboardStats;
-}
-
-function calcVariation(current: number, previous: number): number {
-  if (previous === 0) return current > 0 ? 100 : 0;
-  return Math.round(((current - previous) / previous) * 100);
 }
 
 function VariationBadge({ value }: { value: number }) {

@@ -138,3 +138,12 @@ export function addHoursToDate(date: Date, hours: number): Date {
   result.setHours(result.getHours() + hours);
   return result;
 }
+
+/**
+ * Calculates the percentage variation between two values.
+ * Returns 100 if previous is 0 and current is positive, 0 if both are 0.
+ */
+export function calcVariation(current: number, previous: number): number {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 100);
+}

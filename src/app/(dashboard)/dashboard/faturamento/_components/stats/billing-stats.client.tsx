@@ -10,14 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BillingStats } from "@/types/billing";
+import { calcVariation } from "@/lib/utils";
 
 interface BillingStatsCardsProps {
   data: BillingStats;
-}
-
-function calcVariation(current: number, previous: number): number {
-  if (previous === 0) return current > 0 ? 100 : 0;
-  return Math.round(((current - previous) / previous) * 100);
 }
 
 function VariationBadge({ value, hasData }: { value: number; hasData: boolean }) {
