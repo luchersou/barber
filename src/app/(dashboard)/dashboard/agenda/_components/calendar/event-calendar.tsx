@@ -163,7 +163,7 @@ export function EventCalendar({
     setSelectedEvent(null);
 
     if (deletedEvent) {
-      toast(`Atendimento "${deletedEvent.title}" deletado`, {
+      toast.success(`Atendimento "${deletedEvent.title}" deletado`, {
         description: format(new Date(deletedEvent.start), "dd/MM/yyyy"),
         position: "bottom-left",
       });
@@ -172,9 +172,9 @@ export function EventCalendar({
 
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
     onEventUpdate?.(updatedEvent);
-    toast(`Atendimento "${updatedEvent.title}" movido`, {
+
+    toast.success(`Atendimento "${updatedEvent.title}" alterado`, {
       description: format(new Date(updatedEvent.start), "dd/MM/yyyy"),
-      position: "bottom-left",
     });
   };
 

@@ -76,17 +76,28 @@ export function EventCalendarApp({
 
     if (data.id) {
       await updateAppointment(data.id, data);
-      dispatchOptimistic({ type: "update", event: calendarEvent });
-      toast(`Atendimento "${calendarEvent.title}" atualizado`, {
+
+      dispatchOptimistic({
+        type: "update",
+        event: calendarEvent,
+      });
+
+      toast.success(`Atendimento "${calendarEvent.title}" atualizado`, {
         description: format(start, "dd/MM/yyyy"),
-        position: "bottom-left",
       });
     } else {
       const result = await createAppointment(data);
-      dispatchOptimistic({ type: "add", event: { ...calendarEvent, id: result.appointmentId } });
-      toast(`Atendimento "${calendarEvent.title}" adicionado`, {
+
+      dispatchOptimistic({
+        type: "add",
+        event: {
+          ...calendarEvent,
+          id: result.appointmentId,
+        },
+      });
+
+      toast.success(`Atendimento "${calendarEvent.title}" adicionado`, {
         description: format(start, "dd/MM/yyyy"),
-        position: "bottom-left",
       });
     }
   };
