@@ -1,24 +1,11 @@
 "use client";
 
-import {
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { ClientsResponse } from "@/types/clients";
 import { clientsColumns } from "./clients-columns";
-import { TablePagination } from "@/components/shared/pagination";
 import { ClientsFilters } from "./clients-filters.client";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Users, SearchX } from "lucide-react";
+import { DataTable } from "@/components/shared/data-table";
 
 interface ClientsTableClientProps {
   data: ClientsResponse;
@@ -26,12 +13,6 @@ interface ClientsTableClientProps {
 }
 
 export function ClientsTableClient({ data, hasFilters }: ClientsTableClientProps) {
-  const table = useReactTable({
-    data: data.clients,
-    columns: clientsColumns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   const isEmpty = data.clients.length === 0;
 
   return (
@@ -53,44 +34,12 @@ export function ClientsTableClient({ data, hasFilters }: ClientsTableClientProps
           />
         )
       ) : (
-        <>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id}>
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-          <TablePagination
-            totalPages={data.totalPages}
-            currentPage={data.currentPage}
-          />
-        </>
+        <DataTable
+          data={data.clients}
+          columns={clientsColumns}
+          totalPages={data.totalPages}
+          currentPage={data.currentPage}
+        />
       )}
     </div>
   );
