@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { fromZonedTime } from "date-fns-tz";
 import { AppointmentsResponse } from "@/types/appointments";
-import { getUser } from "../auth/auth";
 
 const APPOINTMENTS_PER_PAGE = 10;
 
