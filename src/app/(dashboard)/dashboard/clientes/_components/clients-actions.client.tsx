@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Client } from "@/types/clients";
 import { updateClient, deleteClient } from "@/actions/clients";
 import {
@@ -88,12 +88,14 @@ export function ClientsActions({ client }: ClientsActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+            <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
             className="text-destructive"
             onClick={() => setIsDeleteOpen(true)}
           >
+            <Trash2 className="mr-2 h-4 w-4" />
             Deletar
           </DropdownMenuItem>
         </DropdownMenuContent>
