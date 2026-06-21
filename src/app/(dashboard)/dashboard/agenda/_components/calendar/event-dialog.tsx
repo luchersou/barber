@@ -30,12 +30,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ClientSelect } from "@/types/clients";
 import { BarberSelect } from "@/types/barbers";
 import { ServiceSelect } from "@/types/services";
-import { createAppointment, updateAppointment, deleteAppointment, getAppointmentByIdAction } from "@/actions/appointment";
+import { getAppointmentByIdAction } from "@/actions/appointment";
 import { CreateAppointmentInput } from "@/lib/validations/appointment";
-
-const statusColor: Record<string, EventColor> = {
-  default: "sky",
-};
 
 interface EventDialogProps {
   event: CalendarEvent | null;
@@ -176,134 +172,137 @@ export function EventDialog({
             {event?.id ? "Edite os detalhes do atendimento" : "Adicione um novo atendimento"}
           </DialogDescription>
         </DialogHeader>
-        {error && (
-          <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
-            {error}
-          </div>
-        )}
-        <div className="grid gap-4 py-4">
-          <div className="*:not-first:mt-1.5">
-            <Label htmlFor="client">Cliente</Label>
-            <Select value={clientId} onValueChange={setClientId}>
-              <SelectTrigger id="client">
-                <SelectValue placeholder="Selecione um cliente" />
-              </SelectTrigger>
-              <SelectContent>
-                {clients.map((client) => (
-                  <SelectItem key={client.id} value={client.id}>
-                    {client.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
 
-          <div className="*:not-first:mt-1.5">
-            <Label htmlFor="barber">Barbeiro</Label>
-            <Select value={barberId} onValueChange={setBarberId}>
-              <SelectTrigger id="barber">
-                <SelectValue placeholder="Selecione um barbeiro" />
-              </SelectTrigger>
-              <SelectContent>
-                {barbers.map((barber) => (
-                  <SelectItem key={barber.id} value={barber.id}>
-                    {barber.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="*:not-first:mt-1.5">
-            <Label>Serviços</Label>
-            <div className="flex flex-wrap gap-2 mt-1.5">
-              {services.map((service) => (
-                <button
-                  key={service.id}
-                  type="button"
-                  onClick={() => handleServiceToggle(service.id)}
-                  className={cn(
-                    "rounded-md border px-3 py-1.5 text-sm transition-colors",
-                    selectedServiceIds.includes(service.id)
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-background border-input hover:bg-accent"
-                  )}
-                >
-                  {service.name} · {Number(service.price).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </button>
-              ))}
+        <div className="overflow-y-auto max-h-[60vh] pr-1">
+          {error && (
+            <div className="bg-destructive/15 text-destructive rounded-md px-3 py-2 text-sm">
+              {error}
             </div>
-          </div>
-
-          <div className="flex gap-4">
-            <div className="flex-1 *:not-first:mt-1.5">
-              <Label htmlFor="start-date">Data</Label>
-              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="start-date"
-                    variant="outline"
-                    className={cn(
-                      "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
-                      !startDate && "text-muted-foreground"
-                    )}
-                  >
-                    <span className={cn("truncate", !startDate && "text-muted-foreground")}>
-                      {startDate ? format(startDate, "PPP") : "Selecione uma data"}
-                    </span>
-                    <RiCalendarLine
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    defaultMonth={startDate}
-                    onSelect={(date) => {
-                      if (date) {
-                        setStartDate(date);
-                        setError(null);
-                        setStartDateOpen(false);
-                      }
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="min-w-28 *:not-first:mt-1.5">
-              <Label htmlFor="start-time">Horário</Label>
-              <Select value={startTime} onValueChange={setStartTime}>
-                <SelectTrigger id="start-time">
-                  <SelectValue placeholder="Horário" />
+          )}
+          <div className="grid gap-4 py-4">
+            <div className="*:not-first:mt-1.5">
+              <Label htmlFor="client">Cliente</Label>
+              <Select value={clientId} onValueChange={setClientId}>
+                <SelectTrigger id="client">
+                  <SelectValue placeholder="Selecione um cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
+                  {clients.map((client) => (
+                    <SelectItem key={client.id} value={client.id}>
+                      {client.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          <div className="*:not-first:mt-1.5">
-            <Label htmlFor="notes">Observações</Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={3}
-              placeholder="Observações sobre o atendimento..."
-            />
+            <div className="*:not-first:mt-1.5">
+              <Label htmlFor="barber">Barbeiro</Label>
+              <Select value={barberId} onValueChange={setBarberId}>
+                <SelectTrigger id="barber">
+                  <SelectValue placeholder="Selecione um barbeiro" />
+                </SelectTrigger>
+                <SelectContent>
+                  {barbers.map((barber) => (
+                    <SelectItem key={barber.id} value={barber.id}>
+                      {barber.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="*:not-first:mt-1.5">
+              <Label>Serviços</Label>
+              <div className="flex flex-wrap gap-2 mt-1.5">
+                {services.map((service) => (
+                  <button
+                    key={service.id}
+                    type="button"
+                    onClick={() => handleServiceToggle(service.id)}
+                    className={cn(
+                      "rounded-md border px-3 py-1.5 text-sm transition-colors",
+                      selectedServiceIds.includes(service.id)
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background border-input hover:bg-accent"
+                    )}
+                  >
+                    {service.name} · {Number(service.price).toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-1 *:not-first:mt-1.5">
+                <Label htmlFor="start-date">Data</Label>
+                <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      id="start-date"
+                      variant="outline"
+                      className={cn(
+                        "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    >
+                      <span className={cn("truncate", !startDate && "text-muted-foreground")}>
+                        {startDate ? format(startDate, "PPP") : "Selecione uma data"}
+                      </span>
+                      <RiCalendarLine
+                        size={16}
+                        className="text-muted-foreground/80 shrink-0"
+                        aria-hidden="true"
+                      />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-2" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={startDate}
+                      defaultMonth={startDate}
+                      onSelect={(date) => {
+                        if (date) {
+                          setStartDate(date);
+                          setError(null);
+                          setStartDateOpen(false);
+                        }
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="min-w-28 *:not-first:mt-1.5">
+                <Label htmlFor="start-time">Horário</Label>
+                <Select value={startTime} onValueChange={setStartTime}>
+                  <SelectTrigger id="start-time">
+                    <SelectValue placeholder="Horário" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="*:not-first:mt-1.5">
+              <Label htmlFor="notes">Observações</Label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={3}
+                placeholder="Observações sobre o atendimento..."
+              />
+            </div>
           </div>
         </div>
         <DialogFooter className="flex-row sm:justify-between">
