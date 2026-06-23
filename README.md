@@ -1,14 +1,14 @@
 # BarberApp
 
-> A modern barbershop management SaaS built with Next.js 15, focused on appointment scheduling, revenue tracking, and client management.
+> A modern barbershop management SaaS built with Next.js 16, focused on appointment scheduling, revenue tracking, and client management.
 
-🔗 **Live Demo:** _coming soon_
+🔗 **Live Demo:** [barber-orcin-two.vercel.app](barber-orcin-two.vercel.app)
 
 ---
 
 ## Demo
 
-<!-- Add demo video here -->
+▶️ [Watch full demo](https://youtu.be/XR2wmJuiQ-k)
 
 ---
 
@@ -29,7 +29,7 @@
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Database | PostgreSQL (Supabase) |
 | ORM | Prisma 7 with PgAdapter |
@@ -125,10 +125,6 @@ npx prisma generate
 > 4. Paste it into `prisma/seed.ts` as the `USER_ID` constant
 > 5. Then run `npm run seed`
 
-```bash
-npm run seed       # optional: populate with realistic sample data
-```
-
 ### Development
 
 ```bash
@@ -143,7 +139,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npm run seed       # seed with 180 days of realistic appointment data
-npm run reset      # wipe all data (keeps user table intact)
+npm run reset      # wipe all data 
 ```
 
 ---
