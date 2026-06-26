@@ -14,12 +14,11 @@ interface BillingPageProps {
     page?: string;
     startDate?: string;
     endDate?: string;
-    timezone?: string;
   }>;
 }
 
 export default async function BillingPage({ searchParams }: BillingPageProps) {
-  const { page, startDate, endDate, timezone } = await searchParams;
+  const { page, startDate, endDate } = await searchParams;
 
   return (
     <div className="space-y-6 p-6">
@@ -30,10 +29,10 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
         </p>
       </div>
       <Suspense fallback={<StatsSkeleton />}>
-        <BillingStatsServer timezone={timezone} />
+        <BillingStatsServer />
       </Suspense>
       <Suspense fallback={<RevenueChartSkeleton />}>
-        <BillingRevenueChartServer timezone={timezone} />
+        <BillingRevenueChartServer />
       </Suspense>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Suspense fallback={<ChartSkeleton />}>
@@ -48,7 +47,6 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
           page={page ? Number(page) : undefined}
           startDate={startDate}
           endDate={endDate}
-          timezone={timezone}
         />
       </Suspense>
     </div>

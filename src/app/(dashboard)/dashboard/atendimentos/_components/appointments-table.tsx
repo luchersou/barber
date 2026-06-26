@@ -11,7 +11,6 @@ interface AppointmentsTableServerProps {
   clientId?: string;
   startDate?: string;
   endDate?: string;
-  timezone?: string;
 }
 
 export async function AppointmentsTableServer({
@@ -20,12 +19,11 @@ export async function AppointmentsTableServer({
   clientId,
   startDate,
   endDate,
-  timezone,
 }: AppointmentsTableServerProps) {
   const { userId } = await getUser();
 
   const [data, barbers, clients, services] = await Promise.all([
-    getAppointments(userId, { page, barberId, clientId, startDate, endDate, timezone }),
+    getAppointments(userId, { page, barberId, clientId, startDate, endDate }),
     getBarbersForSelect(userId),
     getClientsForSelect(userId),
     getServicesForSelect(userId),

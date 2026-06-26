@@ -1,4 +1,3 @@
-// appointments-new-button.server.tsx
 import { getUser } from "@/lib/auth/auth";
 import { getClientsForSelect } from "@/lib/data/clients";
 import { getBarbersForSelect } from "@/lib/data/barbers";
