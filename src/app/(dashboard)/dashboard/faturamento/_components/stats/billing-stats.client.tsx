@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, DollarSign, Receipt, TrendingDown,TrendingUp } from "lucide-react";
+import { CheckCircle, DollarSign, Receipt, TrendingUp } from "lucide-react";
 
 import {
   Card,
@@ -10,27 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { VariationBadge } from "@/components/ui/variation-badge";
 import { calcVariation } from "@/lib/utils";
 import { BillingStats } from "@/types/billing";
 
 interface BillingStatsCardsProps {
   data: BillingStats;
-}
-
-function VariationBadge({ value, hasData }: { value: number; hasData: boolean }) {
-  if (!hasData) {
-    return <span className="text-muted-foreground">Sem dados no período</span>;
-  }
-
-  const isPositive = value >= 0;
-  const Icon = isPositive ? TrendingUp : TrendingDown;
-
-  return (
-    <span className={`flex items-center gap-1 ${isPositive ? "text-green-600" : "text-red-600"}`}>
-      <Icon className="h-3 w-3" />
-      {isPositive ? "+" : ""}{value}% vs período equivalente
-    </span>
-  );
 }
 
 export function BillingStatsCards({ data }: BillingStatsCardsProps) {

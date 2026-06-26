@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, CheckCircle, DollarSign, TrendingDown, TrendingUp,Users } from "lucide-react";
+import { Calendar, CheckCircle, DollarSign, Users } from "lucide-react";
 
 import {
   Card,
@@ -10,23 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { VariationBadge } from "@/components/ui/variation-badge";
 import { calcVariation } from "@/lib/utils";
 import { DashboardStats } from "@/types/dashboard";
 
 interface DashboardStatsCardsProps {
   data: DashboardStats;
-}
-
-function VariationBadge({ value }: { value: number }) {
-  const isPositive = value >= 0;
-  const Icon = isPositive ? TrendingUp : TrendingDown;
-
-  return (
-    <span className={`flex items-center gap-1 ${isPositive ? "text-green-600" : "text-red-600"}`}>
-      <Icon className="h-3 w-3" />
-      {isPositive ? "+" : ""}{value}% vs período equivalente
-    </span>
-  );
 }
 
 export function DashboardStatsCards({ data }: DashboardStatsCardsProps) {
@@ -42,7 +31,10 @@ export function DashboardStatsCards({ data }: DashboardStatsCardsProps) {
         <CardHeader>
           <CardTitle>Receita do Mês</CardTitle>
           <CardDescription>
-            <VariationBadge value={variations.monthRevenue} />
+            <VariationBadge 
+              value={variations.monthRevenue} 
+              hasData={data.monthRevenue > 0 || data.lastMonth.monthRevenue > 0} 
+            />
           </CardDescription>
           <CardAction>
             <DollarSign className="text-muted-foreground/50 size-4 lg:size-6" />
@@ -61,7 +53,7 @@ export function DashboardStatsCards({ data }: DashboardStatsCardsProps) {
         <CardHeader>
           <CardTitle>Agendamentos do Mês</CardTitle>
           <CardDescription>
-            <VariationBadge value={variations.monthAppointments} />
+            <VariationBadge value={variations.monthAppointments} hasData={data.monthAppointments > 0 || data.lastMonth.monthAppointments > 0} />
           </CardDescription>
           <CardAction>
             <Calendar className="text-muted-foreground/50 size-4 lg:size-6" />
@@ -91,7 +83,10 @@ export function DashboardStatsCards({ data }: DashboardStatsCardsProps) {
         <CardHeader>
           <CardTitle>Concluídos</CardTitle>
           <CardDescription>
-            <VariationBadge value={variations.completedThisMonth} />
+            <VariationBadge 
+              value={variations.completedThisMonth} 
+              hasData={data.completedThisMonth > 0 || data.lastMonth.completedThisMonth > 0} 
+            />
           </CardDescription>
           <CardAction>
             <CheckCircle className="text-muted-foreground/50 size-4 lg:size-6" />
