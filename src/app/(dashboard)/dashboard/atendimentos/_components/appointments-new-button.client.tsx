@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+
+import { createAppointment } from "@/actions/appointment";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -21,8 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { createAppointment } from "@/actions/appointment";
+import { Textarea } from "@/components/ui/textarea";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
 import { ServiceSelect } from "@/types/services";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { RiCalendarCheckLine } from "@remixicon/react";
 import {
   addDays,
@@ -14,7 +13,22 @@ import {
   subWeeks,
 } from "date-fns";
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { CreateAppointmentInput } from "@/lib/validations/appointment";
+import { BarberSelect } from "@/types/barbers";
+import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
 
 import {
   addHoursToDate,
@@ -31,19 +45,6 @@ import {
   WeekCellsHeight,
   WeekView,
 } from "./";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ClientSelect } from "@/types/clients";
-import { BarberSelect } from "@/types/barbers";
-import { ServiceSelect } from "@/types/services";
-import { CreateAppointmentInput } from "@/lib/validations/appointment";
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];

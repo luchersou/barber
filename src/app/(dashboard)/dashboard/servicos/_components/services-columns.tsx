@@ -1,8 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+
 import { Badge } from "@/components/ui/badge";
 import { ServiceTable } from "@/types/services";
+
 import { ServicesActions } from "./services-actions.client";
 
 export const servicesColumns: ColumnDef<ServiceTable>[] = [

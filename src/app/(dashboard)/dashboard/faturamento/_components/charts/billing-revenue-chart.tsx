@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/auth/auth";
 import { getBillingRevenueChart } from "@/lib/data/billing";
+
 import { BillingRevenueChartClient } from "./billing-revenue-chart.client";
 
 interface BillingRevenueChartServerProps {

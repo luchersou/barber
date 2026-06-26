@@ -1,11 +1,13 @@
 import { Suspense } from "react";
+
+import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
+import { RevenueChartSkeleton } from "@/components/shared/skeletons/revenue-chart-skeleton";
+import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
+
 import { DashboardStatsCardsServer } from "./_components/dashboard-stats-cards";
 import { RevenueChartServer } from "./_components/revenue-chart";
-import { TopServicesServer } from "./_components/top-services";
 import { TopBarbersRevenueServer } from "./_components/top-barbers-revenue";
-import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
-import { RevenueChartSkeleton } from "@/components/shared/skeletons/revenue-chart-skeleton";
-import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
+import { TopServicesServer } from "./_components/top-services";
 
 interface DashboardPageProps {
   searchParams: Promise<{

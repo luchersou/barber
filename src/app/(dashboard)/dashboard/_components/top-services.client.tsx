@@ -1,7 +1,9 @@
 "use client";
 
+import { Scissors } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
   CardContent,
@@ -11,14 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "@/components/ui/chart";
 import { TopService } from "@/types/dashboard";
-import { Scissors } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
 
 const chartConfig = {
   count: {

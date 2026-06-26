@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+
 import { getUser } from "@/lib/auth/auth";
-import { createAppointmentSchema, CreateAppointmentInput } from "@/lib/validations/appointment";
 import { getAppointmentById } from "@/lib/data/appointments";
+import { prisma } from "@/lib/prisma";
+import { CreateAppointmentInput,createAppointmentSchema } from "@/lib/validations/appointment";
 
 /**
  * Validates appointment data, ensures related entities exist,

@@ -1,8 +1,9 @@
 import { getUser } from "@/lib/auth/auth";
+import { getBarbersForSelect } from "@/lib/data/barbers";
 import { getCalendarAppointments } from "@/lib/data/calendar-appointment";
 import { getClientsForSelect } from "@/lib/data/clients";
-import { getBarbersForSelect } from "@/lib/data/barbers";
 import { getServicesForSelect } from "@/lib/data/services";
+
 import { EventCalendarApp } from "./event-calendar-app.client";
 
 export async function EventCalendarAppServer() {

@@ -1,11 +1,13 @@
 "use client";
 
+import { SearchX,Users } from "lucide-react";
+
+import { DataTable } from "@/components/shared/data-table";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ClientsResponse } from "@/types/clients";
+
 import { clientsColumns } from "./clients-columns";
 import { ClientsFilters } from "./clients-filters.client";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Users, SearchX } from "lucide-react";
-import { DataTable } from "@/components/shared/data-table";
 
 interface ClientsTableClientProps {
   data: ClientsResponse;

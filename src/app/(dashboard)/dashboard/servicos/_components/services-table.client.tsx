@@ -1,11 +1,13 @@
 "use client";
 
+import { SearchX,Sparkles } from "lucide-react";
+
+import { DataTable } from "@/components/shared/data-table";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ServicesResponse } from "@/types/services";
+
 import { servicesColumns } from "./services-columns";
 import { ServicesFilters } from "./services-filters.client";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Sparkles, SearchX } from "lucide-react";
-import { DataTable } from "@/components/shared/data-table";
 
 interface ServicesTableClientProps {
   data: ServicesResponse;

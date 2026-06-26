@@ -1,7 +1,8 @@
 import { getUser } from "@/lib/auth/auth";
-import { getClientsForSelect } from "@/lib/data/clients";
 import { getBarbersForSelect } from "@/lib/data/barbers";
+import { getClientsForSelect } from "@/lib/data/clients";
 import { getServicesForSelect } from "@/lib/data/services";
+
 import { AppointmentsNewButton } from "./appointments-new-button.client";
 
 export async function AppointmentsNewButtonServer() {

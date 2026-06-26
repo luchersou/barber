@@ -1,6 +1,7 @@
 import { Suspense } from "react";
-import { ServicesTableServer } from "./_components/services-table";
+
 import { ServicesNewButton } from "./_components/services-new-button.client";
+import { ServicesTableServer } from "./_components/services-table";
 
 interface ServicesPageProps {
   searchParams: Promise<{

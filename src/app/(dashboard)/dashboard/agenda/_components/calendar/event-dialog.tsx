@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { RiCalendarLine, RiDeleteBinLine } from "@remixicon/react";
 import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 
-import type { CalendarEvent, EventColor } from "./";
-import { DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
-import { cn } from "@/lib/utils";
+import { getAppointmentByIdAction } from "@/actions/appointment";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -27,11 +25,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ClientSelect } from "@/types/clients";
-import { BarberSelect } from "@/types/barbers";
-import { ServiceSelect } from "@/types/services";
-import { getAppointmentByIdAction } from "@/actions/appointment";
+import { DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
+import { cn } from "@/lib/utils";
 import { CreateAppointmentInput } from "@/lib/validations/appointment";
+import { BarberSelect } from "@/types/barbers";
+import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
+
+import type { CalendarEvent, EventColor } from "./";
 
 interface EventDialogProps {
   event: CalendarEvent | null;

@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/auth/auth";
 import { getServicesTable } from "@/lib/data/services";
+
 import { ServicesTableClient } from "./services-table.client";
 
 interface ServicesTableServerProps {

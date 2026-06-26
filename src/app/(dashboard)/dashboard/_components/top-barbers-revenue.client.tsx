@@ -1,6 +1,9 @@
 "use client";
 
+import { Users } from "lucide-react";
 import { LabelList, Pie, PieChart } from "recharts";
+
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
   CardContent,
@@ -10,14 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "@/components/ui/chart";
 import { TopBarberRevenue } from "@/types/dashboard";
-import { Users } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
 
 interface TopBarbersRevenueChartProps {
   data: TopBarberRevenue[];

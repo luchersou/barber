@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
 import { addDays, format, isToday } from "date-fns";
+import { Calendar } from "lucide-react";
+import { useMemo } from "react";
 
 import { AgendaDaysToShow, CalendarEvent, EventItem, getAgendaEventsForDay } from "./";
-import { Calendar } from "lucide-react";
 
 interface AgendaViewProps {
   currentDate: Date;

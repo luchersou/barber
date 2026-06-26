@@ -1,7 +1,9 @@
-import { PrismaClient, AppointmentStatus } from "../src/generated/prisma/client";
+import "dotenv/config";
+
 import { PrismaPg } from "@prisma/adapter-pg";
 import { randomUUID } from "crypto";
-import "dotenv/config";
+
+import { AppointmentStatus,PrismaClient } from "../src/generated/prisma/client";
 
 const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL });
 const prisma = new PrismaClient({ adapter });

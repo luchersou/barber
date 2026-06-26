@@ -3,6 +3,7 @@ import { getAppointments } from "@/lib/data/appointments";
 import { getBarbersForSelect } from "@/lib/data/barbers";
 import { getClientsForSelect } from "@/lib/data/clients";
 import { getServicesForSelect } from "@/lib/data/services";
+
 import { AppointmentsTableClient } from "./appointments-table.client";
 
 interface AppointmentsTableServerProps {

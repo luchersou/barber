@@ -1,8 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+
 import { Badge } from "@/components/ui/badge";
 import { BarberTable } from "@/types/barbers";
+
 import { BarbersActions } from "./barbers-actions.client";
 
 export const barbersColumns: ColumnDef<BarberTable>[] = [

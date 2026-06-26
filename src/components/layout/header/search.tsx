@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { CommandIcon, SearchIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { CommandIcon, SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
+import { navItems } from "@/components/layout/sidebar/nav-main";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandDialog,
@@ -16,9 +17,8 @@ import {
   CommandList,
   CommandSeparator
 } from "@/components/ui/command";
-import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { navItems } from "@/components/layout/sidebar/nav-main";
+import { Input } from "@/components/ui/input";
 
 export default function Search() {
   const [open, setOpen] = useState(false);

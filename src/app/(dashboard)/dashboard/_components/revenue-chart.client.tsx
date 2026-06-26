@@ -3,6 +3,7 @@
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
   CardContent,
@@ -12,13 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "@/components/ui/chart";
 import { RevenueChart as RevenueChartData } from "@/types/dashboard";
-import { EmptyState } from "@/components/shared/empty-state";
 
 const chartConfig = {
   revenue: {

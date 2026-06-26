@@ -1,8 +1,10 @@
-import { prisma } from "@/lib/prisma";
-import { AppointmentStatus } from "@/generated/prisma/client";
-import { DashboardStats, RevenueChart, TopBarberRevenue, AppointmentsByStatus, TopService } from "@/types/dashboard";
 import { startOfDay, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
+
+import { AppointmentStatus } from "@/generated/prisma/client";
+import { prisma } from "@/lib/prisma";
+import { AppointmentsByStatus, DashboardStats, RevenueChart, TopBarberRevenue, TopService } from "@/types/dashboard";
+
 import { getMonthDateRanges } from "../date-ranges";
 
 const REVENUE_CHART_DAYS = 30;

@@ -1,18 +1,18 @@
-import React from "react";
-import { cookies } from "next/headers";
-import { cn } from "@/lib/utils";
-import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "next-themes";
-import { Metadata } from "next";
-import { fontVariables } from "@/lib/fonts";
-import NextTopLoader from "nextjs-toploader";
-import Script from "next/script";
-
 import "./globals.css";
 
+import { ClerkProvider } from "@clerk/nextjs";
+import { Metadata } from "next";
+import { cookies } from "next/headers";
+import Script from "next/script";
+import { ThemeProvider } from "next-themes";
+import NextTopLoader from "nextjs-toploader";
+import React from "react";
+
 import { ActiveThemeProvider } from "@/components/theme-customizer/active-theme";
-import { DEFAULT_THEME } from "@/lib/themes/themes";
 import { Toaster } from "@/components/ui/sonner";
+import { fontVariables } from "@/lib/fonts";
+import { DEFAULT_THEME } from "@/lib/themes/themes";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Tio Dog Barbearia",

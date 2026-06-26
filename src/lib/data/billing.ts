@@ -1,9 +1,10 @@
-import { prisma } from "@/lib/prisma";
-import { AppointmentStatus } from "@/generated/prisma/client";
-import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
-import { getMonthDateRanges } from "@/lib/date-ranges";
+
+import { AppointmentStatus } from "@/generated/prisma/client";
 import { APP_TIMEZONE } from "@/lib/constants/app";
+import { getMonthDateRanges } from "@/lib/date-ranges";
+import { prisma } from "@/lib/prisma";
+import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, BillingStats, BillingTransactionsResponse } from "@/types/billing";
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 

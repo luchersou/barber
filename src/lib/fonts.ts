@@ -1,16 +1,16 @@
 import {
   Geist,
-  Inter,
-  Montserrat,
-  Overpass_Mono,
-  Poppins,
-  Roboto,
-  PT_Sans,
-  Plus_Jakarta_Sans,
   Hedvig_Letters_Serif,
+  Inter,
   Kumbh_Sans,
-  Outfit
-} from "next/font/google";
+  Montserrat,
+  Outfit,
+  Overpass_Mono,
+  Plus_Jakarta_Sans,
+  Poppins,
+  PT_Sans,
+  Roboto} from "next/font/google";
+
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });

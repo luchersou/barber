@@ -1,8 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Client } from "@/types/clients";
+
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { Client } from "@/types/clients";
+
 import { ClientsActions } from "./clients-actions.client";
 
 const statusLabels: Record<AppointmentStatus, string> = {

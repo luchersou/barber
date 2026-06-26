@@ -1,14 +1,16 @@
 "use client";
 
+import { CalendarSearch,CalendarX } from "lucide-react";
+
+import { DataTable } from "@/components/shared/data-table";
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppointmentsResponse } from "@/types/appointments";
-import { appointmentsColumns } from "./appointments-columns";
-import { AppointmentsFilters } from "./appointments-filters.client";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
 import { ServiceSelect } from "@/types/services";
-import { EmptyState } from "@/components/shared/empty-state";
-import { CalendarX, CalendarSearch } from "lucide-react";
-import { DataTable } from "@/components/shared/data-table";
+
+import { appointmentsColumns } from "./appointments-columns";
+import { AppointmentsFilters } from "./appointments-filters.client";
 
 interface AppointmentsTableClientProps {
   data: AppointmentsResponse;

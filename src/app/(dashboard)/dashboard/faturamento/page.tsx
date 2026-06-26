@@ -1,12 +1,14 @@
 import { Suspense } from "react";
-import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
+
 import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
 import { RevenueChartSkeleton } from "@/components/shared/skeletons/revenue-chart-skeleton";
+import { StatsSkeleton } from "@/components/shared/skeletons/stats-skeleton";
 import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
-import { BillingStatsServer } from "./_components/stats/billing-stats";
-import { BillingRevenueChartServer } from "./_components/charts/billing-revenue-chart";
+
 import { BillingRevenueByBarberServer } from "./_components/charts/billing-revenue-by-barber";
 import { BillingRevenueByServiceServer } from "./_components/charts/billing-revenue-by-service";
+import { BillingRevenueChartServer } from "./_components/charts/billing-revenue-chart";
+import { BillingStatsServer } from "./_components/stats/billing-stats";
 import { BillingTransactionsServer } from "./_components/transactions/billing-transactions";
 
 interface BillingPageProps {

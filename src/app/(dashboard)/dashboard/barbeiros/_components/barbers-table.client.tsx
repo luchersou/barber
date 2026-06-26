@@ -1,11 +1,13 @@
 "use client";
 
+import { Scissors, SearchX } from "lucide-react";
+
+import { DataTable } from "@/components/shared/data-table";
+import { EmptyState } from "@/components/shared/empty-state";
 import { BarbersResponse } from "@/types/barbers";
+
 import { barbersColumns } from "./barbers-columns";
 import { BarbersFilters } from "./barbers-filters.client";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Scissors, SearchX } from "lucide-react";
-import { DataTable } from "@/components/shared/data-table";
 
 interface BarbersTableClientProps {
   data: BarbersResponse;

@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Calendar, DollarSign, Users, TrendingDown, TrendingUp } from "lucide-react";
+import { Calendar, CheckCircle, DollarSign, TrendingDown, TrendingUp,Users } from "lucide-react";
 
 import {
   Card,
@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DashboardStats } from "@/types/dashboard";
 import { calcVariation } from "@/lib/utils";
+import { DashboardStats } from "@/types/dashboard";
 
 interface DashboardStatsCardsProps {
   data: DashboardStats;

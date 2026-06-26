@@ -1,9 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { prisma } from "@/lib/prisma";
+
 import { getUser } from "@/lib/auth/auth";
-import { createBarberSchema, CreateBarberInput } from "@/lib/validations/barber";
+import { prisma } from "@/lib/prisma";
+import { CreateBarberInput,createBarberSchema } from "@/lib/validations/barber";
 
 /**
  * Revalidates pages affected by barber changes.

@@ -1,6 +1,7 @@
 "use client";
 
-import { DollarSign, TrendingUp, Receipt, CheckCircle, TrendingDown } from "lucide-react";
+import { CheckCircle, DollarSign, Receipt, TrendingDown,TrendingUp } from "lucide-react";
+
 import {
   Card,
   CardAction,
@@ -9,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BillingStats } from "@/types/billing";
 import { calcVariation } from "@/lib/utils";
+import { BillingStats } from "@/types/billing";
 
 interface BillingStatsCardsProps {
   data: BillingStats;

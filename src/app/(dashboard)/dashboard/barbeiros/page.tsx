@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+
 import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
-import { BarbersTableServer } from "./_components/barbers-table";
+
 import { BarbersNewButton } from "./_components/barbers-new-button.client";
+import { BarbersTableServer } from "./_components/barbers-table";
 
 interface BarbersPageProps {
   searchParams: Promise<{

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { ClientsResponse, ClientSelect } from "@/types/clients";
+import { ClientSelect,ClientsResponse } from "@/types/clients";
 
 const CLIENTS_PER_PAGE = 10;
 

@@ -1,19 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { Appointment } from "@/types/appointments";
-import { BarberSelect } from "@/types/barbers";
-import { ClientSelect } from "@/types/clients";
-import { ServiceSelect } from "@/types/services";
-import { getAppointmentByIdAction, updateAppointment, deleteAppointment } from "@/actions/appointment";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+
+import { deleteAppointment,getAppointmentByIdAction, updateAppointment } from "@/actions/appointment";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -22,9 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -32,7 +29,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Appointment } from "@/types/appointments";
+import { BarberSelect } from "@/types/barbers";
+import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
 
 interface AppointmentsActionsProps {
   appointment: Appointment;

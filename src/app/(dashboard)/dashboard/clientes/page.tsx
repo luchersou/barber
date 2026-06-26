@@ -1,7 +1,9 @@
 import { Suspense } from "react";
+
 import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
-import { ClientsTableServer } from "./_components/clients-table";
+
 import { ClientsNewButton } from "./_components/clients-new-button.client";
+import { ClientsTableServer } from "./_components/clients-table";
 
 interface ClientsPageProps {
   searchParams: Promise<{

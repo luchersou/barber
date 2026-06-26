@@ -1,6 +1,27 @@
 "use client";
 
 import {
+  CalendarCheckIcon,
+  CalendarIcon,
+  ChevronRight,
+  DollarSignIcon,
+  HomeIcon,
+  type LucideIcon,
+  ScissorsIcon,
+  UserCogIcon,
+  UsersIcon} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -13,27 +34,6 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from "@/components/ui/sidebar";
-import {
-  CalendarIcon,
-  ChevronRight,
-  UsersIcon,
-  type LucideIcon,
-  CalendarCheckIcon,
-  HomeIcon,
-  DollarSignIcon,
-  UserCogIcon,
-  ScissorsIcon
-} from "lucide-react";
-import Link from "next/link";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { usePathname } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 type NavGroup = {
   title: string;

@@ -1,5 +1,7 @@
 import { Suspense } from "react";
+
 import { CalendarSkeleton } from "@/components/shared/skeletons/calendar-skeleton";
+
 import { EventCalendarAppServer } from "./_components/calendar/event-calendar-app";
 
 export default function AgendaPage() {

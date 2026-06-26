@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+
 import { BillingTransaction } from "@/types/billing";
 
 export const billingTransactionsColumns: ColumnDef<BillingTransaction>[] = [

@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/auth/auth";
 import { getBillingTransactions } from "@/lib/data/billing";
+
 import { BillingTransactionsClient } from "./billing-transactions.client";
 
 interface BillingTransactionsServerProps {

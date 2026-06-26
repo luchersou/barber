@@ -1,22 +1,21 @@
 "use client";
 
-import { createContext, useContext, useId, useRef, useState, type ReactNode } from "react";
 import {
   DndContext,
+  type DragEndEvent,
+  type DragOverEvent,
   DragOverlay,
+  type DragStartEvent,
   MouseSensor,
   PointerSensor,
   TouchSensor,
+  type UniqueIdentifier,
   useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-  type UniqueIdentifier
-} from "@dnd-kit/core";
+  useSensors} from "@dnd-kit/core";
 import { addMinutes, differenceInMinutes } from "date-fns";
+import { createContext, type ReactNode,useContext, useId, useRef, useState } from "react";
 
-import { EventItem, type CalendarEvent } from "./";
+import { type CalendarEvent,EventItem } from "./";
 
 // Define the context type
 type CalendarDndContextType = {

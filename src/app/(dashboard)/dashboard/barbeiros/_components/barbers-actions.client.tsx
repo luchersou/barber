@@ -1,14 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { BarberTable } from "@/types/barbers";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+
+import { deleteBarber,updateBarber } from "@/actions/barbers";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +13,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { updateBarber, deleteBarber } from "@/actions/barbers";
+import { BarberTable } from "@/types/barbers";
 
 interface BarbersActionsProps {
   barber: BarberTable;

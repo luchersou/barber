@@ -1,7 +1,8 @@
-import { EventColor, CalendarEvent } from "@/types/calendar";
-import { clsx, type ClassValue } from "clsx"
+import { type ClassValue,clsx } from "clsx"
 import { isSameDay } from "date-fns";
 import { twMerge } from "tailwind-merge"
+
+import { CalendarEvent,EventColor } from "@/types/calendar";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

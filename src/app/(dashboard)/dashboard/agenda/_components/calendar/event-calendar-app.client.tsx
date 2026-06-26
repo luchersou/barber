@@ -1,14 +1,16 @@
 "use client";
 
-import { useOptimistic, useTransition } from "react";
-import { EventCalendar, type CalendarEvent } from "./";
-import { ClientSelect } from "@/types/clients";
-import { BarberSelect } from "@/types/barbers";
-import { ServiceSelect } from "@/types/services";
-import { createAppointment, updateAppointment, updateAppointmentDate, deleteAppointment } from "@/actions/appointment";
-import { CreateAppointmentInput } from "@/lib/validations/appointment";
-import { toast } from "sonner"; 
 import { format } from "date-fns";
+import { useOptimistic, useTransition } from "react";
+import { toast } from "sonner"; 
+
+import { createAppointment, deleteAppointment,updateAppointment, updateAppointmentDate } from "@/actions/appointment";
+import { CreateAppointmentInput } from "@/lib/validations/appointment";
+import { BarberSelect } from "@/types/barbers";
+import { ClientSelect } from "@/types/clients";
+import { ServiceSelect } from "@/types/services";
+
+import { type CalendarEvent,EventCalendar } from "./";
 
 interface EventCalendarAppProps {
   events: CalendarEvent[];

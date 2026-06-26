@@ -1,9 +1,10 @@
-import React from "react";
 import { cookies } from "next/headers";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import React from "react";
+
 import { SiteHeader } from "@/components/layout/header";
+import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
+import { SidebarInset,SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default async function DashboardLayout({
   children,

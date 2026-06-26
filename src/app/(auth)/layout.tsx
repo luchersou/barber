@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+
 import { AuthCarousel } from "./_components/auth-carousel";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {

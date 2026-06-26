@@ -1,5 +1,6 @@
 import { getUser } from "@/lib/auth/auth";
 import { getBarbersTable } from "@/lib/data/barbers";
+
 import { BarbersTableClient } from "./barbers-table.client";
 
 interface BarbersTableServerProps {

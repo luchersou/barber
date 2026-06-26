@@ -1,6 +1,9 @@
 "use client";
 
+import { BarChart3 } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
+
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
   CardContent,
@@ -10,14 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "@/components/ui/chart";
 import { BillingRevenueByService } from "@/types/billing";
-import { EmptyState } from "@/components/shared/empty-state";
-import { BarChart3 } from "lucide-react";
 
 const chartConfig = {
   revenue: {

@@ -1,7 +1,8 @@
-import { prisma } from "@/lib/prisma";
 import { fromZonedTime } from "date-fns-tz";
-import { AppointmentsResponse } from "@/types/appointments";
+
 import { APP_TIMEZONE } from "@/lib/constants/app";
+import { prisma } from "@/lib/prisma";
+import { AppointmentsResponse } from "@/types/appointments";
 
 const APPOINTMENTS_PER_PAGE = 10;
 

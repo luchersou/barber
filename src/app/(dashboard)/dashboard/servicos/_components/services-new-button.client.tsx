@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+
+import { createService } from "@/actions/services";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createService } from "@/actions/services";
 
 export function ServicesNewButton() {
   const [isOpen, setIsOpen] = useState(false);

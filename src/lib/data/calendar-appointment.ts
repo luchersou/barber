@@ -1,5 +1,5 @@
-import { CalendarEvent, EventColor } from "@/types/calendar";
 import { prisma } from "@/lib/prisma";
+import { CalendarEvent, EventColor } from "@/types/calendar";
 
 export async function getCalendarAppointments(userId: string): Promise<CalendarEvent[]> {
   const [appointments, barbers] = await Promise.all([

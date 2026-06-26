@@ -1,5 +1,5 @@
-import { ServiceSelect, ServicesResponse } from "@/types/services";
 import { prisma } from "@/lib/prisma";
+import { ServiceSelect, ServicesResponse } from "@/types/services";
 
 const SERVICES_PER_PAGE = 10;
 

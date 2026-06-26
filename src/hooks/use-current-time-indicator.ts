@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { endOfWeek, isSameDay, isWithinInterval, startOfWeek } from "date-fns";
+import { useEffect, useState } from "react";
 
 import { EndHour, StartHour } from "@/lib/calendar-constants";
 

@@ -1,6 +1,9 @@
 "use client";
 
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useClerk,useUser } from "@clerk/nextjs";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { LogOutIcon, UserCircle2Icon } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -17,8 +20,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { LogOutIcon, UserCircle2Icon } from "lucide-react";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
