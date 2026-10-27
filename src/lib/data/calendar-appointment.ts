@@ -1,3 +1,5 @@
+import { AppointmentStatus } from "@/generated/prisma/enums";
+import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
 import { prisma } from "@/lib/prisma";
 import { CalendarEvent, EventColor } from "@/types/calendar";
 
@@ -21,7 +23,8 @@ export async function getCalendarAppointments(userId: string): Promise<CalendarE
       },
     }),
     prisma.barber.findMany({
-      where: { userId, active: true },
+      // Includes inactive barbers so their past appointments keep a stable color
+      where: { userId },
       select: { id: true },
       orderBy: { createdAt: "asc" },
     }),
@@ -42,7 +45,10 @@ export async function getCalendarAppointments(userId: string): Promise<CalendarE
 
     return {
       id: a.id,
-      title: a.client.name,
+      title:
+        a.status === AppointmentStatus.SCHEDULED
+          ? a.client.name
+          : `${a.client.name} (${APPOINTMENT_STATUS_LABELS[a.status]})`,
       description: `${a.barber.name} · ${a.services.map((s) => s.service.name).join(", ")}`,
       start: a.date,
       end: new Date(a.date.getTime() + totalDuration * 60 * 1000),

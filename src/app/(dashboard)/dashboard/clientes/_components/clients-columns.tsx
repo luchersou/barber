@@ -2,18 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { AppointmentStatus } from "@/generated/prisma/client";
+import { AppointmentStatus } from "@/generated/prisma/enums";
 import { APP_TIMEZONE } from "@/lib/constants/app";
+import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
 import { Client } from "@/types/clients";
 
 import { ClientsActions } from "./clients-actions.client";
-
-const statusLabels: Record<AppointmentStatus, string> = {
-  SCHEDULED: "Agendado",
-  COMPLETED: "Concluído",
-  CANCELLED: "Cancelado",
-  NO_SHOW: "Não compareceu",
-};
 
 export const clientsColumns: ColumnDef<Client>[] = [
   {
@@ -56,7 +50,7 @@ export const clientsColumns: ColumnDef<Client>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status: AppointmentStatus | null = row.getValue("lastAppointmentStatus");
-      return status ? statusLabels[status] : "—";
+      return status ? APPOINTMENT_STATUS_LABELS[status] : "—";
     },
   },
   {

@@ -3,11 +3,12 @@
 import { fromZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
 
+import { AppointmentStatus } from "@/generated/prisma/enums";
 import { getUser } from "@/lib/auth/auth";
 import { APP_TIMEZONE } from "@/lib/constants/app";
 import { getAppointmentById } from "@/lib/data/appointments";
 import { prisma } from "@/lib/prisma";
-import { appointmentDateSchema, CreateAppointmentInput, createAppointmentSchema } from "@/lib/validations/appointment";
+import { appointmentDateSchema, appointmentStatusSchema, CreateAppointmentInput, createAppointmentSchema } from "@/lib/validations/appointment";
 
 /**
  * Interprets a "yyyy-MM-dd" date and "HH:mm" time as wall-clock time
@@ -40,6 +41,7 @@ async function buildAppointmentData(
       where: {
         id: validated.clientId,
         userId,
+        active: true,
       },
       select: { id: true },
     }),
@@ -48,6 +50,7 @@ async function buildAppointmentData(
       where: {
         id: validated.barberId,
         userId,
+        active: true,
       },
       select: { id: true },
     }),
@@ -58,6 +61,7 @@ async function buildAppointmentData(
           in: validated.serviceIds,
         },
         userId,
+        active: true,
       },
       select: {
         id: true,
@@ -96,8 +100,11 @@ async function buildAppointmentData(
  * Revalidates pages affected by appointment changes.
  */
 function revalidateAppointments() {
-  revalidatePath("/agenda");
-  revalidatePath("/atendimentos");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/atendimentos");
+  revalidatePath("/dashboard/clientes");
+  revalidatePath("/dashboard/faturamento");
 }
 
 
@@ -231,6 +238,28 @@ export async function updateAppointmentDate(id: string, date: string, time: stri
   await prisma.appointment.update({
     where: { id, userId },
     data: { date: appointmentDate },
+  });
+
+  revalidateAppointments();
+
+  return { success: true };
+}
+
+/**
+ * Updates only the status of an existing appointment.
+ */
+export async function updateAppointmentStatus(id: string, status: AppointmentStatus) {
+  const { userId } = await getUser();
+
+  const result = appointmentStatusSchema.safeParse(status);
+
+  if (!result.success) {
+    throw new Error("Status inválido");
+  }
+
+  await prisma.appointment.update({
+    where: { id, userId },
+    data: { status: result.data },
   });
 
   revalidateAppointments();

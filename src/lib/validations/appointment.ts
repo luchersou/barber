@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AppointmentStatus } from "@/generated/prisma/enums";
+
 export const createAppointmentSchema = z.object({
   clientId: z.string().min(1, "Selecione um cliente"),
   barberId: z.string().min(1, "Selecione um barbeiro"),
@@ -13,5 +15,7 @@ export const appointmentDateSchema = createAppointmentSchema.pick({
   date: true,
   time: true,
 });
+
+export const appointmentStatusSchema = z.enum(AppointmentStatus);
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>;

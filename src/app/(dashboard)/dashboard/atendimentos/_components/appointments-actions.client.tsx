@@ -1,9 +1,10 @@
 "use client";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { CircleDot, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
-import { deleteAppointment,getAppointmentByIdAction, updateAppointment } from "@/actions/appointment";
+import { deleteAppointment, getAppointmentByIdAction, updateAppointment, updateAppointmentStatus } from "@/actions/appointment";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -18,6 +19,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -30,7 +37,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { AppointmentStatus } from "@/generated/prisma/enums";
 import { toAppointmentDateParts } from "@/lib/appointment-date";
+import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
 import { Appointment } from "@/types/appointments";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
@@ -115,6 +124,20 @@ export function AppointmentsActions({
     }
   }
 
+  async function handleStatusChange(status: AppointmentStatus) {
+    if (status === appointment.status) return;
+
+    try {
+      setIsLoading(true);
+      await updateAppointmentStatus(appointment.id, status);
+      toast.success(`Status alterado para "${APPOINTMENT_STATUS_LABELS[status]}"`);
+    } catch {
+      toast.error("Erro ao alterar status. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   async function handleDelete() {
     try {
       setIsLoading(true);
@@ -138,6 +161,25 @@ export function AppointmentsActions({
             <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger disabled={isLoading}>
+              <CircleDot className="mr-2 h-4 w-4" />
+              Alterar status
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuRadioGroup
+                value={appointment.status}
+                onValueChange={(value) => handleStatusChange(value as AppointmentStatus)}
+              >
+                {Object.values(AppointmentStatus).map((status) => (
+                  <DropdownMenuRadioItem key={status} value={status}>
+                    {APPOINTMENT_STATUS_LABELS[status]}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-destructive"
             onClick={() => setIsDeleteOpen(true)}
