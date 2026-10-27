@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
+import { Badge } from "@/components/ui/badge";
 import { AppointmentStatus } from "@/generated/prisma/enums";
 import { APP_TIMEZONE } from "@/lib/constants/app";
 import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
@@ -18,6 +19,18 @@ export const clientsColumns: ColumnDef<Client>[] = [
     accessorKey: "phone",
     header: "Telefone",
     cell: ({ row }) => row.getValue("phone") ?? "—",
+  },
+  {
+    accessorKey: "active",
+    header: "Situação",
+    cell: ({ row }) => {
+      const active: boolean = row.getValue("active");
+      return (
+        <Badge variant={active ? "default" : "secondary"}>
+          {active ? "Ativo" : "Inativo"}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "createdAt",

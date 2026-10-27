@@ -21,7 +21,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
     lastMonthRevenue,
     completedLastMonth,
   ] = await Promise.all([
-    prisma.client.count({ where: { userId } }),
+    prisma.client.count({ where: { userId, active: true } }),
 
     prisma.appointment.count({
       where: { userId, date: { gte: startOfMonth } },
