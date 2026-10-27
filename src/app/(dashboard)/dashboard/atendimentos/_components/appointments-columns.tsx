@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { APP_TIMEZONE } from "@/lib/constants/app";
 import { Appointment } from "@/types/appointments";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
@@ -23,6 +24,7 @@ export const appointmentsColumns: ColumnDef<Appointment>[] = [
     header: "Data",
     cell: ({ row }) =>
       new Date(row.getValue("date")).toLocaleDateString("pt-BR", {
+        timeZone: APP_TIMEZONE,
         day: "2-digit",
         month: "2-digit",
         year: "numeric",

@@ -8,8 +8,8 @@ import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, B
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
-export async function getBillingStats(userId: string, timezone: string = "UTC"): Promise<BillingStats> {
-  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges(timezone);
+export async function getBillingStats(userId: string): Promise<BillingStats> {
+  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges();
 
   const [
     totalRevenue,
@@ -88,12 +88,12 @@ export async function getBillingStats(userId: string, timezone: string = "UTC"):
   };
 }
 
-export async function getBillingRevenueChart(userId: string, timezone: string = "UTC"): Promise<BillingRevenueChart[]> {
+export async function getBillingRevenueChart(userId: string): Promise<BillingRevenueChart[]> {
   const now = new Date();
-  const nowInTZ = toZonedTime(now, timezone);
+  const nowInTZ = toZonedTime(now, APP_TIMEZONE);
   const twelveMonthsAgo = fromZonedTime(
     new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11, 1, 0, 0, 0, 0),
-    timezone
+    APP_TIMEZONE
   );
 
   const appointments = await prisma.appointment.findMany({
@@ -114,16 +114,16 @@ export async function getBillingRevenueChart(userId: string, timezone: string = 
     const d = toZonedTime(
       fromZonedTime(
         new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11 + i, 1),
-        timezone
+        APP_TIMEZONE
       ),
-      timezone
+      APP_TIMEZONE
     );
     const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     revenueMap[key] = 0;
   }
 
   for (const appointment of appointments) {
-    const d = toZonedTime(appointment.date, timezone);
+    const d = toZonedTime(appointment.date, APP_TIMEZONE);
     const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     if (key in revenueMap) {
       revenueMap[key] += Number(appointment.totalPrice);
@@ -207,16 +207,10 @@ export async function getBillingTransactions(
       ? {
           date: {
             ...(startDate && {
-              gte: fromZonedTime(
-                `${startDate.split("T")[0]}T00:00:00`,
-                APP_TIMEZONE
-              ),
+              gte: fromZonedTime(`${startDate}T00:00:00`, APP_TIMEZONE),
             }),
             ...(endDate && {
-              lte: fromZonedTime(
-                `${endDate.split("T")[0]}T23:59:59.999`,
-                APP_TIMEZONE
-              ),
+              lte: fromZonedTime(`${endDate}T23:59:59.999`, APP_TIMEZONE),
             }),
           },
         }

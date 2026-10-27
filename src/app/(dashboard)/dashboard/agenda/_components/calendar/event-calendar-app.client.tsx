@@ -1,10 +1,13 @@
 "use client";
 
 import { format } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { useOptimistic, useTransition } from "react";
 import { toast } from "sonner"; 
 
 import { createAppointment, deleteAppointment,updateAppointment, updateAppointmentDate } from "@/actions/appointment";
+import { toAppointmentDateParts } from "@/lib/appointment-date";
+import { APP_TIMEZONE } from "@/lib/constants/app";
 import { CreateAppointmentInput } from "@/lib/validations/appointment";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
@@ -35,12 +38,6 @@ function eventsReducer(state: CalendarEvent[], action: CalendarAction): Calendar
   }
 }
 
-const formatTime = (date: Date) => {
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
 export function EventCalendarApp({
   events: initialEvents,
   clients,
@@ -62,8 +59,7 @@ export function EventCalendarApp({
     const selectedServices = services.filter((s) => data.serviceIds.includes(s.id));
     const totalDuration = selectedServices.reduce((acc, s) => acc + s.duration, 0);
 
-    const [hours, minutes] = data.time.split(":").map(Number);
-    const start = new Date(`${data.date}T${data.time}:00`);
+    const start = fromZonedTime(`${data.date}T${data.time}:00`, APP_TIMEZONE);
     const end = new Date(start.getTime() + totalDuration * 60 * 1000);
 
     const calendarEvent: CalendarEvent = {
@@ -107,9 +103,8 @@ export function EventCalendarApp({
   const handleEventUpdate = (updatedEvent: CalendarEvent) => {
     startTransition(async () => {
       dispatchOptimistic({ type: "update", event: updatedEvent });
-      const dateStr = `${updatedEvent.start.getFullYear()}-${String(updatedEvent.start.getMonth() + 1).padStart(2, "0")}-${String(updatedEvent.start.getDate()).padStart(2, "0")}`;
-      const timeStr = formatTime(updatedEvent.start);
-      await updateAppointmentDate(updatedEvent.id, dateStr, timeStr);
+      const { date, time } = toAppointmentDateParts(updatedEvent.start);
+      await updateAppointmentDate(updatedEvent.id, date, time);
     });
   };
 

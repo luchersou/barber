@@ -9,15 +9,7 @@ import { RevenueChartServer } from "./_components/revenue-chart";
 import { TopBarbersRevenueServer } from "./_components/top-barbers-revenue";
 import { TopServicesServer } from "./_components/top-services";
 
-interface DashboardPageProps {
-  searchParams: Promise<{
-    timezone?: string;
-  }>;
-}
-
-export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const { timezone } = await searchParams;
-
+export default function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
       <div>
@@ -25,10 +17,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         <p className="text-muted-foreground">Bem-vindo ao painel.</p>
       </div>
       <Suspense fallback={<StatsSkeleton />}>
-        <DashboardStatsCardsServer timezone={timezone} />
+        <DashboardStatsCardsServer />
       </Suspense>
       <Suspense fallback={<RevenueChartSkeleton />}>
-        <RevenueChartServer timezone={timezone} />
+        <RevenueChartServer />
       </Suspense>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Suspense fallback={<ChartSkeleton />}>

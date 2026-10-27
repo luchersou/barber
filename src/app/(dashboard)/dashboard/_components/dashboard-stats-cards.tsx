@@ -3,13 +3,9 @@ import { getDashboardStats } from "@/lib/data/dashboard";
 
 import { DashboardStatsCards } from "./dashboard-stats-cards.client";
 
-interface DashboardStatsCardsServerProps {
-  timezone?: string;
-}
-
-export async function DashboardStatsCardsServer({ timezone }: DashboardStatsCardsServerProps) {
+export async function DashboardStatsCardsServer() {
   const { userId } = await getUser();
-  const data = await getDashboardStats(userId, timezone);
+  const data = await getDashboardStats(userId);
 
   return <DashboardStatsCards data={data} />;
 }

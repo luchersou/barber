@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { APP_TIMEZONE } from "@/lib/constants/app";
 import { Client } from "@/types/clients";
 
 import { ClientsActions } from "./clients-actions.client";
@@ -29,6 +30,7 @@ export const clientsColumns: ColumnDef<Client>[] = [
     header: "Cadastrado em",
     cell: ({ row }) =>
       new Date(row.getValue("createdAt")).toLocaleDateString("pt-BR", {
+        timeZone: APP_TIMEZONE,
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -41,6 +43,7 @@ export const clientsColumns: ColumnDef<Client>[] = [
       const date: Date | null = row.getValue("lastAppointmentDate");
       return date
         ? new Date(date).toLocaleDateString("pt-BR", {
+            timeZone: APP_TIMEZONE,
             day: "2-digit",
             month: "2-digit",
             year: "numeric",

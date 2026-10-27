@@ -1,11 +1,21 @@
 "use server";
 
+import { fromZonedTime } from "date-fns-tz";
 import { revalidatePath } from "next/cache";
 
 import { getUser } from "@/lib/auth/auth";
+import { APP_TIMEZONE } from "@/lib/constants/app";
 import { getAppointmentById } from "@/lib/data/appointments";
 import { prisma } from "@/lib/prisma";
-import { CreateAppointmentInput,createAppointmentSchema } from "@/lib/validations/appointment";
+import { appointmentDateSchema, CreateAppointmentInput, createAppointmentSchema } from "@/lib/validations/appointment";
+
+/**
+ * Interprets a "yyyy-MM-dd" date and "HH:mm" time as wall-clock time
+ * in the barbershop timezone, regardless of the server timezone.
+ */
+function toAppointmentDate(date: string, time: string) {
+  return fromZonedTime(`${date}T${time}:00`, APP_TIMEZONE);
+}
 
 /**
  * Validates appointment data, ensures related entities exist,
@@ -23,7 +33,7 @@ async function buildAppointmentData(
 
   const validated = result.data;
 
-  const appointmentDate = new Date(`${validated.date}T${validated.time}:00`);
+  const appointmentDate = toAppointmentDate(validated.date, validated.time);
 
   const [client, barber, services] = await Promise.all([
     prisma.client.findFirst({
@@ -210,9 +220,13 @@ export async function deleteAppointment(id: string) {
 export async function updateAppointmentDate(id: string, date: string, time: string) {
   const { userId } = await getUser();
 
-  const [hours, minutes] = time.split(":").map(Number);
-  const appointmentDate = new Date(`${date}T${time}:00`);
-  appointmentDate.setHours(hours, minutes, 0, 0);
+  const result = appointmentDateSchema.safeParse({ date, time });
+
+  if (!result.success) {
+    throw new Error("Dados inválidos");
+  }
+
+  const appointmentDate = toAppointmentDate(result.data.date, result.data.time);
 
   await prisma.appointment.update({
     where: { id, userId },

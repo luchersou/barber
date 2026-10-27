@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -40,8 +40,8 @@ export function AppointmentsFilters({
   const endDateParam = searchParams.get("endDate");
 
   const [date, setDate] = useState<DateRange | undefined>({
-    from: startDateParam ? new Date(startDateParam) : undefined,
-    to: endDateParam ? new Date(endDateParam) : undefined,
+    from: startDateParam ? parse(startDateParam, "yyyy-MM-dd", new Date()) : undefined,
+    to: endDateParam ? parse(endDateParam, "yyyy-MM-dd", new Date()) : undefined,
   });
 
   function handleFilter(key: string, value: string) {
@@ -58,25 +58,19 @@ export function AppointmentsFilters({
   function handleDateRange(range: DateRange | undefined) {
     setDate(range);
     const params = new URLSearchParams(searchParams.toString());
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     if (range?.from) {
-      const from = range.from;
-      const dateStr = `${from.getFullYear()}-${String(from.getMonth() + 1).padStart(2, "0")}-${String(from.getDate()).padStart(2, "0")}`;
-      params.set("startDate", dateStr);
+      params.set("startDate", format(range.from, "yyyy-MM-dd"));
     } else {
       params.delete("startDate");
     }
 
     if (range?.to) {
-      const to = range.to;
-      const dateStr = `${to.getFullYear()}-${String(to.getMonth() + 1).padStart(2, "0")}-${String(to.getDate()).padStart(2, "0")}`;
-      params.set("endDate", dateStr);
+      params.set("endDate", format(range.to, "yyyy-MM-dd"));
     } else {
       params.delete("endDate");
     }
 
-    params.set("timezone", timezone);
     params.delete("page");
     router.push(`?${params.toString()}`);
   }

@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toAppointmentDateParts } from "@/lib/appointment-date";
 import { DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
 import { cn } from "@/lib/utils";
 import { CreateAppointmentInput } from "@/lib/validations/appointment";
@@ -138,15 +139,17 @@ export function EventDialog({
       setIsLoading(true);
       setError(null);
 
-      const dateStr = startDate.toISOString().split("T")[0];
+      const start = new Date(startDate);
+      start.setHours(startHours, startMinutes, 0, 0);
+      const { date, time } = toAppointmentDateParts(start);
 
       await onSave({
         id: event?.id,
         clientId,
         barberId,
         serviceIds: selectedServiceIds,
-        date: dateStr,
-        time: startTime,
+        date,
+        time,
         notes,
       });
     } catch (err) {

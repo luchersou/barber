@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
+import { APP_TIMEZONE } from "@/lib/constants/app";
 import { BillingTransaction } from "@/types/billing";
 
 export const billingTransactionsColumns: ColumnDef<BillingTransaction>[] = [
@@ -10,6 +11,7 @@ export const billingTransactionsColumns: ColumnDef<BillingTransaction>[] = [
     header: "Data",
     cell: ({ row }) =>
       new Date(row.getValue("date")).toLocaleDateString("pt-BR", {
+        timeZone: APP_TIMEZONE,
         day: "2-digit",
         month: "2-digit",
         year: "numeric",

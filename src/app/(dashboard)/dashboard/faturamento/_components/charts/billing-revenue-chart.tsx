@@ -3,13 +3,9 @@ import { getBillingRevenueChart } from "@/lib/data/billing";
 
 import { BillingRevenueChartClient } from "./billing-revenue-chart.client";
 
-interface BillingRevenueChartServerProps {
-  timezone?: string;
-}
-
-export async function BillingRevenueChartServer({ timezone }: BillingRevenueChartServerProps) {
+export async function BillingRevenueChartServer() {
   const { userId } = await getUser();
-  const data = await getBillingRevenueChart(userId, timezone);
+  const data = await getBillingRevenueChart(userId);
 
   return <BillingRevenueChartClient data={data} />;
 }

@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toAppointmentDateParts } from "@/lib/appointment-date";
 import { Appointment } from "@/types/appointments";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
@@ -67,12 +68,12 @@ export function AppointmentsActions({
       const data = await getAppointmentByIdAction(appointment.id);
       if (!data) return;
 
-      const d = new Date(data.date);
+      const parts = toAppointmentDateParts(new Date(data.date));
       setClientId(data.clientId);
       setBarberId(data.barberId);
       setServiceIds(data.serviceIds);
-      setDate(d.toISOString().split("T")[0]);
-      setTime(d.toTimeString().slice(0, 5));
+      setDate(parts.date);
+      setTime(parts.time);
       setNotes(data.notes ?? "");
       setIsEditOpen(true);
     } catch {
