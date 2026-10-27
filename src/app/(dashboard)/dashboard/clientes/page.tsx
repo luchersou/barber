@@ -9,13 +9,14 @@ interface ClientsPageProps {
   searchParams: Promise<{
     page?: string;
     search?: string;
+    active?: string;
   }>;
 }
 
 export default async function ClientsPage({
   searchParams,
 }: ClientsPageProps) {
-  const { page, search } = await searchParams;
+  const { page, search, active } = await searchParams;
 
   return (
     <div className="space-y-6 p-6">
@@ -28,10 +29,11 @@ export default async function ClientsPage({
         </div>
         <ClientsNewButton />
       </div>
-      <Suspense fallback={<TableSkeleton cols={7} />}>
+      <Suspense fallback={<TableSkeleton cols={8} />}>
         <ClientsTableServer
           page={page ? Number(page) : undefined}
           search={search}
+          active={active !== undefined ? active === "true" : undefined}
         />
       </Suspense>
     </div>

@@ -84,7 +84,7 @@ export function BillingStatsCards({ data }: BillingStatsCardsProps) {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Taxa de Conclusão</CardTitle>
+          <CardTitle>Taxa de Conclusão do Mês</CardTitle>
           <CardDescription>
             <VariationBadge
               value={variations.completionRate}

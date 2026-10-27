@@ -10,7 +10,10 @@ import { CreateClientInput,createClientSchema } from "@/lib/validations/client";
  * Revalidates pages affected by client changes.
  */
 function revalidateClients() {
-  revalidatePath("/clientes");
+  revalidatePath("/dashboard/clientes");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/atendimentos");
 }
 
 /**

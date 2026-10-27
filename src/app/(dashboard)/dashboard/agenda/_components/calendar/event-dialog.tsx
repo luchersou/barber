@@ -1,7 +1,8 @@
 "use client";
 
-import { RiCalendarLine, RiDeleteBinLine } from "@remixicon/react";
 import { format } from "date-fns";
+import { CalendarIcon, Trash2 } from "lucide-react";
+import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 
 import { getAppointmentByIdAction } from "@/actions/appointment";
@@ -25,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toAppointmentDateParts } from "@/lib/appointment-date";
 import { DefaultStartHour, EndHour, StartHour } from "@/lib/calendar-constants";
 import { cn } from "@/lib/utils";
 import { CreateAppointmentInput } from "@/lib/validations/appointment";
@@ -32,7 +34,7 @@ import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
 import { ServiceSelect } from "@/types/services";
 
-import type { CalendarEvent, EventColor } from "./";
+import type { CalendarEvent } from "./";
 
 interface EventDialogProps {
   event: CalendarEvent | null;
@@ -111,7 +113,7 @@ export function EventDialog({
         const formattedMinute = minute.toString().padStart(2, "0");
         const value = `${formattedHour}:${formattedMinute}`;
         const date = new Date(2000, 0, 1, hour, minute);
-        const label = format(date, "h:mm a");
+        const label = format(date, "HH:mm", { locale: ptBR });
         options.push({ value, label });
       }
     }
@@ -138,18 +140,20 @@ export function EventDialog({
       setIsLoading(true);
       setError(null);
 
-      const dateStr = startDate.toISOString().split("T")[0];
+      const start = new Date(startDate);
+      start.setHours(startHours, startMinutes, 0, 0);
+      const { date, time } = toAppointmentDateParts(start);
 
       await onSave({
         id: event?.id,
         clientId,
         barberId,
         serviceIds: selectedServiceIds,
-        date: dateStr,
-        time: startTime,
+        date,
+        time,
         notes,
       });
-    } catch (err) {
+    } catch {
       setError("Erro ao salvar atendimento. Tente novamente.");
     } finally {
       setIsLoading(false);
@@ -251,9 +255,9 @@ export function EventDialog({
                       )}
                     >
                       <span className={cn("truncate", !startDate && "text-muted-foreground")}>
-                        {startDate ? format(startDate, "PPP") : "Selecione uma data"}
+                        {startDate ? format(startDate, "PPP", { locale: ptBR }) : "Selecione uma data"}
                       </span>
-                      <RiCalendarLine
+                      <CalendarIcon
                         size={16}
                         className="text-muted-foreground/80 shrink-0"
                         aria-hidden="true"
@@ -263,6 +267,7 @@ export function EventDialog({
                   <PopoverContent className="w-auto p-2" align="start">
                     <Calendar
                       mode="single"
+                      locale={ptBR}
                       selected={startDate}
                       defaultMonth={startDate}
                       onSelect={(date) => {
@@ -315,7 +320,7 @@ export function EventDialog({
               disabled={isLoading}
               aria-label="Deletar atendimento"
             >
-              <RiDeleteBinLine size={16} aria-hidden="true" />
+              <Trash2 size={16} aria-hidden="true" />
             </Button>
           )}
           <div className="flex flex-1 justify-end gap-2">

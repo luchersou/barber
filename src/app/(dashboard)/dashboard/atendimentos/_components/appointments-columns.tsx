@@ -2,7 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { AppointmentStatus } from "@/generated/prisma/client";
+import { AppointmentStatus } from "@/generated/prisma/enums";
+import { APP_TIMEZONE } from "@/lib/constants/app";
+import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
 import { Appointment } from "@/types/appointments";
 import { BarberSelect } from "@/types/barbers";
 import { ClientSelect } from "@/types/clients";
@@ -10,19 +12,13 @@ import { ServiceSelect } from "@/types/services";
 
 import { AppointmentsActions } from "./appointments-actions.client";
 
-const statusLabels: Record<AppointmentStatus, string> = {
-  SCHEDULED: "Agendado",
-  COMPLETED: "Concluído",
-  CANCELLED: "Cancelado",
-  NO_SHOW: "Não compareceu",
-};
-
 export const appointmentsColumns: ColumnDef<Appointment>[] = [
   {
     accessorKey: "date",
     header: "Data",
     cell: ({ row }) =>
       new Date(row.getValue("date")).toLocaleDateString("pt-BR", {
+        timeZone: APP_TIMEZONE,
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -51,7 +47,7 @@ export const appointmentsColumns: ColumnDef<Appointment>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status: AppointmentStatus = row.getValue("status");
-      return statusLabels[status];
+      return APPOINTMENT_STATUS_LABELS[status];
     },
   },
   {

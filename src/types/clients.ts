@@ -5,6 +5,7 @@ export type Client = {
   name: string;
   phone: string | null;
   notes: string | null;
+  active: boolean;
   createdAt: Date;
   lastAppointmentDate: Date | null;
   lastAppointmentStatus: AppointmentStatus | null;

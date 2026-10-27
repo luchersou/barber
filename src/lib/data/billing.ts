@@ -8,13 +8,16 @@ import { BillingRevenueByBarber, BillingRevenueByService, BillingRevenueChart, B
 
 const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
-export async function getBillingStats(userId: string, timezone: string = "UTC"): Promise<BillingStats> {
-  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges(timezone);
+export async function getBillingStats(userId: string): Promise<BillingStats> {
+  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges();
+  const now = new Date();
 
   const [
     totalRevenue,
     monthRevenue,
     totalCompleted,
+    monthCompleted,
+    monthTotal,
     lastMonthRevenue,
     lastMonthCompleted,
     lastMonthTotal,
@@ -35,6 +38,22 @@ export async function getBillingStats(userId: string, timezone: string = "UTC"):
 
     prisma.appointment.count({
       where: { userId, status: AppointmentStatus.COMPLETED },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        date: { gte: startOfMonth, lte: now },
+      },
+    }),
+
+    // Only appointments up to now, so future bookings don't lower the rate
+    prisma.appointment.count({
+      where: {
+        userId,
+        date: { gte: startOfMonth, lte: now },
+      },
     }),
 
     prisma.appointment.aggregate({
@@ -66,9 +85,8 @@ export async function getBillingStats(userId: string, timezone: string = "UTC"):
   const monthRevenueValue = Number(monthRevenue._sum.totalPrice ?? 0);
   const averageTicket = totalCompleted > 0 ? totalRevenueValue / totalCompleted : 0;
 
-  const totalAppointments = await prisma.appointment.count({ where: { userId } });
-  const completionRate = totalAppointments > 0
-    ? Math.round((totalCompleted / totalAppointments) * 100)
+  const completionRate = monthTotal > 0
+    ? Math.round((monthCompleted / monthTotal) * 100)
     : 0;
 
   const lastMonthRevenueValue = Number(lastMonthRevenue._sum.totalPrice ?? 0);
@@ -88,12 +106,12 @@ export async function getBillingStats(userId: string, timezone: string = "UTC"):
   };
 }
 
-export async function getBillingRevenueChart(userId: string, timezone: string = "UTC"): Promise<BillingRevenueChart[]> {
+export async function getBillingRevenueChart(userId: string): Promise<BillingRevenueChart[]> {
   const now = new Date();
-  const nowInTZ = toZonedTime(now, timezone);
+  const nowInTZ = toZonedTime(now, APP_TIMEZONE);
   const twelveMonthsAgo = fromZonedTime(
     new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11, 1, 0, 0, 0, 0),
-    timezone
+    APP_TIMEZONE
   );
 
   const appointments = await prisma.appointment.findMany({
@@ -114,16 +132,16 @@ export async function getBillingRevenueChart(userId: string, timezone: string = 
     const d = toZonedTime(
       fromZonedTime(
         new Date(nowInTZ.getFullYear(), nowInTZ.getMonth() - 11 + i, 1),
-        timezone
+        APP_TIMEZONE
       ),
-      timezone
+      APP_TIMEZONE
     );
     const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     revenueMap[key] = 0;
   }
 
   for (const appointment of appointments) {
-    const d = toZonedTime(appointment.date, timezone);
+    const d = toZonedTime(appointment.date, APP_TIMEZONE);
     const key = d.toLocaleDateString("pt-BR", { month: "short", year: "numeric" });
     if (key in revenueMap) {
       revenueMap[key] += Number(appointment.totalPrice);
@@ -150,7 +168,7 @@ export async function getBillingRevenueByBarber(userId: string): Promise<Billing
   const barberIds = result.map((item) => item.barberId);
 
   const barbers = await prisma.barber.findMany({
-    where: { id: { in: barberIds } },
+    where: { userId, id: { in: barberIds } },
     select: { id: true, name: true },
   });
 
@@ -178,7 +196,7 @@ export async function getBillingRevenueByService(userId: string): Promise<Billin
   const serviceIds = result.map((item) => item.serviceId);
 
   const services = await prisma.service.findMany({
-    where: { id: { in: serviceIds } },
+    where: { userId, id: { in: serviceIds } },
     select: { id: true, name: true },
   });
 
@@ -207,16 +225,10 @@ export async function getBillingTransactions(
       ? {
           date: {
             ...(startDate && {
-              gte: fromZonedTime(
-                `${startDate.split("T")[0]}T00:00:00`,
-                APP_TIMEZONE
-              ),
+              gte: fromZonedTime(`${startDate}T00:00:00`, APP_TIMEZONE),
             }),
             ...(endDate && {
-              lte: fromZonedTime(
-                `${endDate.split("T")[0]}T23:59:59.999`,
-                APP_TIMEZONE
-              ),
+              lte: fromZonedTime(`${endDate}T23:59:59.999`, APP_TIMEZONE),
             }),
           },
         }

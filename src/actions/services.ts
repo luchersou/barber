@@ -10,7 +10,32 @@ import { CreateServiceInput,createServiceSchema } from "@/lib/validations/servic
  * Revalidates pages affected by service changes.
  */
 function revalidateServices() {
-  revalidatePath("/servicos");
+  revalidatePath("/dashboard/servicos");
+  revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/atendimentos");
+}
+
+/**
+ * Ensures no other active service of the user already uses this name.
+ */
+async function assertServiceNameAvailable(
+  userId: string,
+  name: string,
+  ignoreId?: string
+) {
+  const existingService = await prisma.service.findFirst({
+    where: {
+      userId,
+      name,
+      active: true,
+      ...(ignoreId && { NOT: { id: ignoreId } }),
+    },
+    select: { id: true },
+  });
+
+  if (existingService) {
+    throw new Error("Já existe um serviço com esse nome");
+  }
 }
 
 /**
@@ -23,17 +48,7 @@ export async function createService(
 
   const validated = createServiceSchema.parse(data);
 
-  const existingService = await prisma.service.findFirst({
-    where: {
-      userId,
-      name: validated.name,
-      active: true,
-    },
-  });
-
-  if (existingService) {
-    throw new Error("Service already exists");
-  }
+  await assertServiceNameAvailable(userId, validated.name);
 
   const service = await prisma.service.create({
     data: {
@@ -62,6 +77,8 @@ export async function updateService(
   const { userId } = await getUser();
 
   const validated = createServiceSchema.parse(data);
+
+  await assertServiceNameAvailable(userId, validated.name, id);
 
   await prisma.service.update({
     where: {

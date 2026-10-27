@@ -1,3 +1,4 @@
+import { AppointmentStatus } from "@/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 import { ClientSelect,ClientsResponse } from "@/types/clients";
 
@@ -8,9 +9,10 @@ export async function getClients(
   params: {
     page?: number;
     search?: string;
+    active?: boolean;
   }
 ): Promise<ClientsResponse> {
-  const { page = 1, search } = params;
+  const { page = 1, search, active } = params;
 
   const where = {
     userId,
@@ -20,6 +22,7 @@ export async function getClients(
         { phone: { contains: search, mode: "insensitive" as const } },
       ],
     }),
+    ...(active !== undefined && { active }),
   };
 
   const [clients, total] = await Promise.all([
@@ -33,6 +36,7 @@ export async function getClients(
         name: true,
         phone: true,
         notes: true,
+        active: true,
         createdAt: true,
         appointments: {
           orderBy: { date: "desc" },
@@ -40,7 +44,6 @@ export async function getClients(
           select: {
             date: true,
             status: true,
-            totalPrice: true,
           },
         },
       },
@@ -49,16 +52,31 @@ export async function getClients(
     prisma.client.count({ where }),
   ]);
 
+  const totals = await prisma.appointment.groupBy({
+    by: ["clientId"],
+    where: {
+      userId,
+      status: AppointmentStatus.COMPLETED,
+      clientId: { in: clients.map((c) => c.id) },
+    },
+    _sum: { totalPrice: true },
+  });
+
+  const totalSpentMap = Object.fromEntries(
+    totals.map((t) => [t.clientId, Number(t._sum.totalPrice ?? 0)])
+  );
+
   return {
     clients: clients.map((c) => ({
       id: c.id,
       name: c.name,
       phone: c.phone,
       notes: c.notes,
+      active: c.active,
       createdAt: c.createdAt,
       lastAppointmentDate: c.appointments[0]?.date ?? null,
       lastAppointmentStatus: c.appointments[0]?.status ?? null,
-      totalSpent: Number(c.appointments[0]?.totalPrice ?? 0),
+      totalSpent: totalSpentMap[c.id] ?? 0,
     })),
     total,
     totalPages: Math.ceil(total / CLIENTS_PER_PAGE),
@@ -68,7 +86,7 @@ export async function getClients(
 
 export async function getClientsForSelect(userId: string): Promise<ClientSelect[]> {
   return prisma.client.findMany({
-    where: { userId },
+    where: { userId, active: true },
     orderBy: { name: "asc" },
     select: {
       id: true,

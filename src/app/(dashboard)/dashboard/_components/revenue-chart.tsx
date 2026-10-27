@@ -3,13 +3,9 @@ import { getRevenueChart } from "@/lib/data/dashboard";
 
 import { RevenueChart } from "./revenue-chart.client";
 
-interface RevenueChartServerProps {
-  timezone?: string;
-}
-
-export async function RevenueChartServer({ timezone }: RevenueChartServerProps) {
+export async function RevenueChartServer() {
   const { userId } = await getUser();
-  const data = await getRevenueChart(userId, timezone);
+  const data = await getRevenueChart(userId);
 
   return <RevenueChart data={data} />;
 }

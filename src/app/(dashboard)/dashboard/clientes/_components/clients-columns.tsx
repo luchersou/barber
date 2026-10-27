@@ -2,17 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { AppointmentStatus } from "@/generated/prisma/client";
+import { Badge } from "@/components/ui/badge";
+import { AppointmentStatus } from "@/generated/prisma/enums";
+import { APP_TIMEZONE } from "@/lib/constants/app";
+import { APPOINTMENT_STATUS_LABELS } from "@/lib/constants/appointment";
 import { Client } from "@/types/clients";
 
 import { ClientsActions } from "./clients-actions.client";
-
-const statusLabels: Record<AppointmentStatus, string> = {
-  SCHEDULED: "Agendado",
-  COMPLETED: "Concluído",
-  CANCELLED: "Cancelado",
-  NO_SHOW: "Não compareceu",
-};
 
 export const clientsColumns: ColumnDef<Client>[] = [
   {
@@ -25,10 +21,23 @@ export const clientsColumns: ColumnDef<Client>[] = [
     cell: ({ row }) => row.getValue("phone") ?? "—",
   },
   {
+    accessorKey: "active",
+    header: "Situação",
+    cell: ({ row }) => {
+      const active: boolean = row.getValue("active");
+      return (
+        <Badge variant={active ? "default" : "secondary"}>
+          {active ? "Ativo" : "Inativo"}
+        </Badge>
+      );
+    },
+  },
+  {
     accessorKey: "createdAt",
     header: "Cadastrado em",
     cell: ({ row }) =>
       new Date(row.getValue("createdAt")).toLocaleDateString("pt-BR", {
+        timeZone: APP_TIMEZONE,
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -41,6 +50,7 @@ export const clientsColumns: ColumnDef<Client>[] = [
       const date: Date | null = row.getValue("lastAppointmentDate");
       return date
         ? new Date(date).toLocaleDateString("pt-BR", {
+            timeZone: APP_TIMEZONE,
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
@@ -53,7 +63,7 @@ export const clientsColumns: ColumnDef<Client>[] = [
     header: "Status",
     cell: ({ row }) => {
       const status: AppointmentStatus | null = row.getValue("lastAppointmentStatus");
-      return status ? statusLabels[status] : "—";
+      return status ? APPOINTMENT_STATUS_LABELS[status] : "—";
     },
   },
   {

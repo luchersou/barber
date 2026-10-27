@@ -1,6 +1,5 @@
 "use client";
 
-import { RiCalendarCheckLine } from "@remixicon/react";
 import {
   addDays,
   addMonths,
@@ -12,7 +11,8 @@ import {
   subMonths,
   subWeeks,
 } from "date-fns";
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
+import { ptBR } from "date-fns/locale";
+import { CalendarCheck, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -165,7 +165,7 @@ export function EventCalendar({
 
     if (deletedEvent) {
       toast.success(`Atendimento "${deletedEvent.title}" deletado`, {
-        description: format(new Date(deletedEvent.start), "dd/MM/yyyy"),
+        description: format(new Date(deletedEvent.start), "dd/MM/yyyy", { locale: ptBR }),
         position: "bottom-left",
       });
     }
@@ -175,43 +175,43 @@ export function EventCalendar({
     onEventUpdate?.(updatedEvent);
 
     toast.success(`Atendimento "${updatedEvent.title}" alterado`, {
-      description: format(new Date(updatedEvent.start), "dd/MM/yyyy"),
+      description: format(new Date(updatedEvent.start), "dd/MM/yyyy", { locale: ptBR }),
     });
   };
 
   const viewTitle = useMemo(() => {
     if (view === "month") {
-      return format(currentDate, "MMMM yyyy");
+      return format(currentDate, "MMMM yyyy", { locale: ptBR });
     } else if (view === "week") {
       const start = startOfWeek(currentDate, { weekStartsOn: 0 });
       const end = endOfWeek(currentDate, { weekStartsOn: 0 });
       if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
+        return format(start, "MMMM yyyy", { locale: ptBR });
       } else {
-        return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+        return `${format(start, "MMM", { locale: ptBR })} - ${format(end, "MMM yyyy", { locale: ptBR })}`;
       }
     } else if (view === "day") {
       return (
         <>
           <span className="min-[480px]:hidden" aria-hidden="true">
-            {format(currentDate, "MMM d, yyyy")}
+            {format(currentDate, "d 'de' MMM yyyy", { locale: ptBR })}
           </span>
           <span className="max-[479px]:hidden min-md:hidden" aria-hidden="true">
-            {format(currentDate, "MMMM d, yyyy")}
+            {format(currentDate, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
           </span>
-          <span className="max-md:hidden">{format(currentDate, "EEE MMMM d, yyyy")}</span>
+          <span className="max-md:hidden">{format(currentDate, "EEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })}</span>
         </>
       );
     } else if (view === "agenda") {
       const start = currentDate;
       const end = addDays(currentDate, AgendaDaysToShow - 1);
       if (isSameMonth(start, end)) {
-        return format(start, "MMMM yyyy");
+        return format(start, "MMMM yyyy", { locale: ptBR });
       } else {
-        return `${format(start, "MMM")} - ${format(end, "MMM yyyy")}`;
+        return `${format(start, "MMM", { locale: ptBR })} - ${format(end, "MMM yyyy", { locale: ptBR })}`;
       }
     } else {
-      return format(currentDate, "MMMM yyyy");
+      return format(currentDate, "MMMM yyyy", { locale: ptBR });
     }
   }, [currentDate, view]);
 
@@ -234,7 +234,7 @@ export function EventCalendar({
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               onClick={handleToday}
             >
-              <RiCalendarCheckLine className="min-[480px]:hidden" size={16} aria-hidden="true" />
+              <CalendarCheck className="min-[480px]:hidden" size={16} aria-hidden="true" />
               <span className="max-[479px]:sr-only">Hoje</span>
             </Button>
             <div className="flex items-center sm:gap-2">

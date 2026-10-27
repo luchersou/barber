@@ -2,19 +2,16 @@
 
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { differenceInMinutes, format, getMinutes, isPast } from "date-fns";
+import { differenceInMinutes, format, isPast } from "date-fns";
 import { useMemo } from "react";
 
 import { cn } from "@/lib/utils";
 
 import { type CalendarEvent,getBorderRadiusClasses, getEventColorClasses } from "./";
 
-// Using date-fns format with custom formatting:
-// 'h' - hours (1-12)
-// 'a' - am/pm
-// ':mm' - minutes with leading zero (only if the token 'mm' is present)
+// 24-hour clock, e.g. "09:00" or "14:30"
 const formatTimeWithOptionalMinutes = (date: Date) => {
-  return format(date, getMinutes(date) === 0 ? "ha" : "h:mma").toLowerCase();
+  return format(date, "HH:mm");
 };
 
 interface EventWrapperProps {
@@ -132,7 +129,7 @@ export function EventItem({
   }, [displayStart, displayEnd]);
 
   const getEventTime = () => {
-    if (event.allDay) return "All day";
+    if (event.allDay) return "Dia inteiro";
 
     // For short events (less than 45 minutes), only show start time
     if (durationMinutes < 45) {
@@ -229,7 +226,7 @@ export function EventItem({
       <div className="text-sm font-medium">{event.title}</div>
       <div className="text-xs opacity-70">
         {event.allDay ? (
-          <span>All day</span>
+          <span>Dia inteiro</span>
         ) : (
           <span className="uppercase">
             {formatTimeWithOptionalMinutes(displayStart)} -{" "}

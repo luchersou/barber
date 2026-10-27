@@ -2,15 +2,15 @@ import { startOfDay, subDays } from "date-fns";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 import { AppointmentStatus } from "@/generated/prisma/client";
+import { APP_TIMEZONE } from "@/lib/constants/app";
+import { getMonthDateRanges } from "@/lib/date-ranges";
 import { prisma } from "@/lib/prisma";
 import { AppointmentsByStatus, DashboardStats, RevenueChart, TopBarberRevenue, TopService } from "@/types/dashboard";
 
-import { getMonthDateRanges } from "../date-ranges";
-
 const REVENUE_CHART_DAYS = 30;
 
-export async function getDashboardStats(userId: string, timezone: string = "UTC"): Promise<DashboardStats> {
-  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges(timezone);
+export async function getDashboardStats(userId: string): Promise<DashboardStats> {
+  const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges();
 
   const [
     totalClients,
@@ -21,7 +21,7 @@ export async function getDashboardStats(userId: string, timezone: string = "UTC"
     lastMonthRevenue,
     completedLastMonth,
   ] = await Promise.all([
-    prisma.client.count({ where: { userId } }),
+    prisma.client.count({ where: { userId, active: true } }),
 
     prisma.appointment.count({
       where: { userId, date: { gte: startOfMonth } },
@@ -82,10 +82,10 @@ export async function getDashboardStats(userId: string, timezone: string = "UTC"
   };
 }
 
-export async function getRevenueChart(userId: string, timezone: string = "UTC"): Promise<RevenueChart[]> {
+export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
   const now = new Date();
-  const startDate = startOfDay(subDays(toZonedTime(now, timezone), REVENUE_CHART_DAYS - 1));
-  const startDateUTC = fromZonedTime(startDate, timezone);
+  const startDate = startOfDay(subDays(toZonedTime(now, APP_TIMEZONE), REVENUE_CHART_DAYS - 1));
+  const startDateUTC = fromZonedTime(startDate, APP_TIMEZONE);
 
   const appointments = await prisma.appointment.findMany({
     where: {
@@ -103,29 +103,24 @@ export async function getRevenueChart(userId: string, timezone: string = "UTC"):
 
   for (let i = 0; i < REVENUE_CHART_DAYS; i++) {
     const d = toZonedTime(
-      fromZonedTime(subDays(startDate, -i), timezone),
-      timezone
+      fromZonedTime(subDays(startDate, -i), APP_TIMEZONE),
+      APP_TIMEZONE
     );
     const key = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
     revenueMap[key] = 0;
   }
 
   for (const appointment of appointments) {
-    const d = toZonedTime(appointment.date, timezone);
+    const d = toZonedTime(appointment.date, APP_TIMEZONE);
     const key = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`;
     if (key in revenueMap) {
       revenueMap[key] += Number(appointment.totalPrice);
     }
   }
 
-  return Object.entries(revenueMap)
-    .sort(([a], [b]) => {
-      const [dayA, monthA] = a.split("/").map(Number);
-      const [dayB, monthB] = b.split("/").map(Number);
-      if (monthA !== monthB) return monthA - monthB;
-      return dayA - dayB;
-    })
-    .map(([date, revenue]) => ({ date, revenue }));
+  // revenueMap keys are inserted in chronological order; sorting by "dd/MM"
+  // would put January before December when the range crosses a year
+  return Object.entries(revenueMap).map(([date, revenue]) => ({ date, revenue }));
 }
 
 export async function getAppointmentsByStatus(userId: string): Promise<AppointmentsByStatus[]> {
@@ -155,7 +150,7 @@ export async function getTopBarbersByRevenue(userId: string): Promise<TopBarberR
   const barberIds = result.map((item) => item.barberId);
 
   const barbers = await prisma.barber.findMany({
-    where: { id: { in: barberIds } },
+    where: { userId, id: { in: barberIds } },
     select: { id: true, name: true },
   });
 
