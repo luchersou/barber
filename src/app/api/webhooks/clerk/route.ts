@@ -32,45 +32,52 @@ export async function POST(req: Request) {
       "svix-timestamp": svixTimestamp,
       "svix-signature": svixSignature,
     }) as WebhookEvent;
-  } catch (err) {
+  } catch {
     return new Response("Assinatura inválida", { status: 400 });
   }
 
   switch (event.type) {
-    case "user.created": {
-			const { id, email_addresses, first_name, last_name } = event.data;
+    case "user.created":
+    case "user.updated": {
+      const { id, email_addresses, first_name, last_name } = event.data;
+      const email = email_addresses[0]?.email_address ?? "";
+      const name = `${first_name ?? ""} ${last_name ?? ""}`.trim();
 
-			await prisma.user.create({
-				data: {
-					clerkUserId: id,
-					email: email_addresses[0]?.email_address ?? "",
-					name: `${first_name ?? ""} ${last_name ?? ""}`.trim(),
-				},
-			});
-			break;
-		}
+      // getUser() may have already created the user on first access,
+      // and webhooks can arrive out of order, so both events upsert.
+      await prisma.user.upsert({
+        where: { clerkUserId: id },
+        update: { email, name },
+        create: { clerkUserId: id, email, name },
+      });
+      break;
+    }
 
-		case "user.updated": {
-			const { id, email_addresses, first_name, last_name } = event.data;
+    case "user.deleted": {
+      const { id } = event.data;
 
-			await prisma.user.update({
-				where: { clerkUserId: id },
-				data: {
-					email: email_addresses[0]?.email_address ?? "",
-					name: `${first_name ?? ""} ${last_name ?? ""}`.trim(),
-				},
-			});
-			break;
-		}
+      if (!id) break;
 
-		case "user.deleted": {
-			const { id } = event.data;
+      const user = await prisma.user.findUnique({
+        where: { clerkUserId: id },
+        select: { id: true },
+      });
 
-			await prisma.user.delete({
-				where: { clerkUserId: id! },
-			});
-			break;
-		}
+      if (!user) break;
+
+      // Foreign keys are RESTRICT, so dependent rows are removed first.
+      await prisma.$transaction([
+        prisma.appointmentService.deleteMany({
+          where: { appointment: { userId: user.id } },
+        }),
+        prisma.appointment.deleteMany({ where: { userId: user.id } }),
+        prisma.client.deleteMany({ where: { userId: user.id } }),
+        prisma.barber.deleteMany({ where: { userId: user.id } }),
+        prisma.service.deleteMany({ where: { userId: user.id } }),
+        prisma.user.delete({ where: { id: user.id } }),
+      ]);
+      break;
+    }
   }
 
   return new Response("OK", { status: 200 });

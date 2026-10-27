@@ -1,4 +1,4 @@
-"use server";
+import "server-only";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
@@ -29,7 +29,7 @@ export async function getUser(throwError = true): Promise<FilledUser | EmptyUser
 
   if (!clerkUserId) {
     if (!throwError) return emptyUser;
-    throw new Error("Unauthorized");
+    throw new Error("Não autorizado");
   }
 
   let user = await prisma.user.findUnique({
