@@ -10,7 +10,9 @@ import { CreateServiceInput,createServiceSchema } from "@/lib/validations/servic
  * Revalidates pages affected by service changes.
  */
 function revalidateServices() {
-  revalidatePath("/servicos");
+  revalidatePath("/dashboard/servicos");
+  revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/atendimentos");
 }
 
 /**

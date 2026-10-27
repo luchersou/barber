@@ -10,7 +10,9 @@ import { CreateBarberInput,createBarberSchema } from "@/lib/validations/barber";
  * Revalidates pages affected by barber changes.
  */
 function revalidateBarbers() {
-  revalidatePath("/barbeiros");
+  revalidatePath("/dashboard/barbeiros");
+  revalidatePath("/dashboard/agenda");
+  revalidatePath("/dashboard/atendimentos");
 }
 
 /**
