@@ -43,7 +43,7 @@ export default async function RootLayout({
   );
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <Script src="https://dashboard.shadcnuikit.com/iframe-listener.js" strategy="afterInteractive" />
       </head>

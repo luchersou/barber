@@ -12,6 +12,7 @@ import {
   startOfMonth,
   startOfWeek
 } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -50,7 +51,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
   const weekdays = useMemo(() => {
     return Array.from({ length: 7 }).map((_, i) => {
       const date = addDays(startOfWeek(new Date()), i);
-      return format(date, "EEE");
+      return format(date, "EEE", { locale: ptBR });
     });
   }, []);
 
@@ -128,7 +129,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                       onEventCreate(startTime);
                     }}>
                     <div className="group-data-today:bg-primary group-data-today:text-primary-foreground mt-1 inline-flex size-6 items-center justify-center rounded-full text-sm">
-                      {format(day, "d")}
+                      {format(day, "d", { locale: ptBR })}
                     </div>
                     <div
                       ref={isReferenceCell ? contentRef : null}
@@ -157,7 +158,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                                 isLastDay={isLastDay}>
                                 <div className="invisible" aria-hidden={true}>
                                   {!event.allDay && (
-                                    <span>{format(new Date(event.start), "h:mm")} </span>
+                                    <span>{format(new Date(event.start), "HH:mm", { locale: ptBR })} </span>
                                   )}
                                   {event.title}
                                 </div>
@@ -202,7 +203,7 @@ export function MonthView({ currentDate, events, onEventSelect, onEventCreate }:
                               } as React.CSSProperties
                             }>
                             <div className="space-y-2">
-                              <div className="text-sm font-medium">{format(day, "EEE d")}</div>
+                              <div className="text-sm font-medium">{format(day, "EEE d", { locale: ptBR })}</div>
                               <div className="space-y-1">
                                 {sortEvents(allEvents).map((event) => {
                                   const eventStart = new Date(event.start);

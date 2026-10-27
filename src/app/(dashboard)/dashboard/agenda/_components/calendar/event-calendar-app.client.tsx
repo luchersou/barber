@@ -1,6 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { fromZonedTime } from "date-fns-tz";
 import { useOptimistic, useTransition } from "react";
 import { toast } from "sonner"; 
@@ -81,7 +82,7 @@ export function EventCalendarApp({
       });
 
       toast.success(`Atendimento "${calendarEvent.title}" atualizado`, {
-        description: format(start, "dd/MM/yyyy"),
+        description: format(start, "dd/MM/yyyy", { locale: ptBR }),
       });
     } else {
       const result = await createAppointment(data);
@@ -95,7 +96,7 @@ export function EventCalendarApp({
       });
 
       toast.success(`Atendimento "${calendarEvent.title}" adicionado`, {
-        description: format(start, "dd/MM/yyyy"),
+        description: format(start, "dd/MM/yyyy", { locale: ptBR }),
       });
     }
   };
