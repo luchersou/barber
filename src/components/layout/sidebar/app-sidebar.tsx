@@ -1,6 +1,5 @@
 "use client";
 
-import { PlusIcon } from "@radix-ui/react-icons";
 import { ChevronsUpDown, ShoppingBagIcon, UserCircle2Icon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import * as React from "react";

@@ -1,6 +1,5 @@
 "use client";
 
-import { RiCalendarCheckLine } from "@remixicon/react";
 import {
   addDays,
   addMonths,
@@ -13,7 +12,7 @@ import {
   subWeeks,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
+import { CalendarCheck, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -235,7 +234,7 @@ export function EventCalendar({
               className="max-[479px]:aspect-square max-[479px]:p-0!"
               onClick={handleToday}
             >
-              <RiCalendarCheckLine className="min-[480px]:hidden" size={16} aria-hidden="true" />
+              <CalendarCheck className="min-[480px]:hidden" size={16} aria-hidden="true" />
               <span className="max-[479px]:sr-only">Hoje</span>
             </Button>
             <div className="flex items-center sm:gap-2">

@@ -1,8 +1,7 @@
 "use client";
 
 import { useClerk,useUser } from "@clerk/nextjs";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { LogOutIcon, UserCircle2Icon } from "lucide-react";
+import { EllipsisVertical, LogOutIcon, UserCircle2Icon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -53,7 +52,7 @@ export function NavUser() {
                 <span className="truncate font-medium">{name}</span>
                 <span className="text-muted-foreground truncate text-xs">{email}</span>
               </div>
-              <DotsVerticalIcon className="ml-auto size-4" />
+              <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent

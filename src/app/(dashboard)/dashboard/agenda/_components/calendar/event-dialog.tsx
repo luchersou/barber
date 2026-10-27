@@ -1,7 +1,7 @@
 "use client";
 
-import { RiCalendarLine, RiDeleteBinLine } from "@remixicon/react";
 import { format } from "date-fns";
+import { CalendarIcon, Trash2 } from "lucide-react";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 
@@ -257,7 +257,7 @@ export function EventDialog({
                       <span className={cn("truncate", !startDate && "text-muted-foreground")}>
                         {startDate ? format(startDate, "PPP", { locale: ptBR }) : "Selecione uma data"}
                       </span>
-                      <RiCalendarLine
+                      <CalendarIcon
                         size={16}
                         className="text-muted-foreground/80 shrink-0"
                         aria-hidden="true"
@@ -320,7 +320,7 @@ export function EventDialog({
               disabled={isLoading}
               aria-label="Deletar atendimento"
             >
-              <RiDeleteBinLine size={16} aria-hidden="true" />
+              <Trash2 size={16} aria-hidden="true" />
             </Button>
           )}
           <div className="flex flex-1 justify-end gap-2">

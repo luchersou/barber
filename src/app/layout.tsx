@@ -3,7 +3,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
-import Script from "next/script";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
 import React from "react";
@@ -44,9 +43,6 @@ export default async function RootLayout({
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <head>
-        <Script src="https://dashboard.shadcnuikit.com/iframe-listener.js" strategy="afterInteractive" />
-      </head>
       <body
         suppressHydrationWarning
         className={cn("bg-background group/layout font-sans", fontVariables)}
