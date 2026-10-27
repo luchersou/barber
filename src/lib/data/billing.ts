@@ -10,11 +10,14 @@ const BILLING_TRANSACTIONS_PER_PAGE = 10;
 
 export async function getBillingStats(userId: string): Promise<BillingStats> {
   const { startOfMonth, startOfLastMonth, equivalentEndOfLastMonth } = getMonthDateRanges();
+  const now = new Date();
 
   const [
     totalRevenue,
     monthRevenue,
     totalCompleted,
+    monthCompleted,
+    monthTotal,
     lastMonthRevenue,
     lastMonthCompleted,
     lastMonthTotal,
@@ -35,6 +38,22 @@ export async function getBillingStats(userId: string): Promise<BillingStats> {
 
     prisma.appointment.count({
       where: { userId, status: AppointmentStatus.COMPLETED },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        userId,
+        status: AppointmentStatus.COMPLETED,
+        date: { gte: startOfMonth, lte: now },
+      },
+    }),
+
+    // Only appointments up to now, so future bookings don't lower the rate
+    prisma.appointment.count({
+      where: {
+        userId,
+        date: { gte: startOfMonth, lte: now },
+      },
     }),
 
     prisma.appointment.aggregate({
@@ -66,9 +85,8 @@ export async function getBillingStats(userId: string): Promise<BillingStats> {
   const monthRevenueValue = Number(monthRevenue._sum.totalPrice ?? 0);
   const averageTicket = totalCompleted > 0 ? totalRevenueValue / totalCompleted : 0;
 
-  const totalAppointments = await prisma.appointment.count({ where: { userId } });
-  const completionRate = totalAppointments > 0
-    ? Math.round((totalCompleted / totalAppointments) * 100)
+  const completionRate = monthTotal > 0
+    ? Math.round((monthCompleted / monthTotal) * 100)
     : 0;
 
   const lastMonthRevenueValue = Number(lastMonthRevenue._sum.totalPrice ?? 0);
@@ -150,7 +168,7 @@ export async function getBillingRevenueByBarber(userId: string): Promise<Billing
   const barberIds = result.map((item) => item.barberId);
 
   const barbers = await prisma.barber.findMany({
-    where: { id: { in: barberIds } },
+    where: { userId, id: { in: barberIds } },
     select: { id: true, name: true },
   });
 
@@ -178,7 +196,7 @@ export async function getBillingRevenueByService(userId: string): Promise<Billin
   const serviceIds = result.map((item) => item.serviceId);
 
   const services = await prisma.service.findMany({
-    where: { id: { in: serviceIds } },
+    where: { userId, id: { in: serviceIds } },
     select: { id: true, name: true },
   });
 

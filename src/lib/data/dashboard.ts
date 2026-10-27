@@ -118,14 +118,9 @@ export async function getRevenueChart(userId: string): Promise<RevenueChart[]> {
     }
   }
 
-  return Object.entries(revenueMap)
-    .sort(([a], [b]) => {
-      const [dayA, monthA] = a.split("/").map(Number);
-      const [dayB, monthB] = b.split("/").map(Number);
-      if (monthA !== monthB) return monthA - monthB;
-      return dayA - dayB;
-    })
-    .map(([date, revenue]) => ({ date, revenue }));
+  // revenueMap keys are inserted in chronological order; sorting by "dd/MM"
+  // would put January before December when the range crosses a year
+  return Object.entries(revenueMap).map(([date, revenue]) => ({ date, revenue }));
 }
 
 export async function getAppointmentsByStatus(userId: string): Promise<AppointmentsByStatus[]> {
@@ -155,7 +150,7 @@ export async function getTopBarbersByRevenue(userId: string): Promise<TopBarberR
   const barberIds = result.map((item) => item.barberId);
 
   const barbers = await prisma.barber.findMany({
-    where: { id: { in: barberIds } },
+    where: { userId, id: { in: barberIds } },
     select: { id: true, name: true },
   });
 
