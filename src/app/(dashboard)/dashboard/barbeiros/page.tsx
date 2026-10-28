@@ -1,9 +1,14 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
 
 import { BarbersNewButton } from "./_components/barbers-new-button.client";
 import { BarbersTableServer } from "./_components/barbers-table";
+
+export const metadata: Metadata = {
+  title: "Barbeiros",
+};
 
 interface BarbersPageProps {
   searchParams: Promise<{

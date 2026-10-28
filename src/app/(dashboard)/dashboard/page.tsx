@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
@@ -8,6 +9,10 @@ import { DashboardStatsCardsServer } from "./_components/dashboard-stats-cards";
 import { RevenueChartServer } from "./_components/revenue-chart";
 import { TopBarbersRevenueServer } from "./_components/top-barbers-revenue";
 import { TopServicesServer } from "./_components/top-services";
+
+export const metadata: Metadata = {
+  title: "Início",
+};
 
 export default function DashboardPage() {
   return (

@@ -1,4 +1,5 @@
 import { PlusIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { TableSkeleton } from "@/components/shared/skeletons/table-skeleton";
@@ -6,6 +7,10 @@ import { Button } from "@/components/ui/button";
 
 import { AppointmentsNewButtonServer } from "./_components/appointments-new-button";
 import { AppointmentsTableServer } from "./_components/appointments-table";
+
+export const metadata: Metadata = {
+  title: "Atendimentos",
+};
 
 interface AppointmentsPageProps {
   searchParams: Promise<{

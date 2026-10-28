@@ -3,6 +3,10 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 const isPublicRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
+  // SEO files must be reachable by crawlers without a session
+  '/robots.txt',
+  '/sitemap.xml',
+  '/opengraph-image(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

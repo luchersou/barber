@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { ServicesNewButton } from "./_components/services-new-button.client";
 import { ServicesTableServer } from "./_components/services-table";
+
+export const metadata: Metadata = {
+  title: "Serviços",
+};
 
 interface ServicesPageProps {
   searchParams: Promise<{

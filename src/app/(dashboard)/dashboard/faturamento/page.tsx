@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { ChartSkeleton } from "@/components/shared/skeletons/chart-skeleton";
@@ -10,6 +11,10 @@ import { BillingRevenueByServiceServer } from "./_components/charts/billing-reve
 import { BillingRevenueChartServer } from "./_components/charts/billing-revenue-chart";
 import { BillingStatsServer } from "./_components/stats/billing-stats";
 import { BillingTransactionsServer } from "./_components/transactions/billing-transactions";
+
+export const metadata: Metadata = {
+  title: "Faturamento",
+};
 
 interface BillingPageProps {
   searchParams: Promise<{

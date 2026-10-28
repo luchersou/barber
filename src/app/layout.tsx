@@ -1,7 +1,7 @@
 import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
 import { ThemeProvider } from "next-themes";
 import NextTopLoader from "nextjs-toploader";
@@ -9,16 +9,49 @@ import React from "react";
 
 import { ActiveThemeProvider } from "@/components/theme-customizer/active-theme";
 import { Toaster } from "@/components/ui/sonner";
+import { APP_DESCRIPTION, APP_NAME, APP_URL } from "@/lib/constants/app";
 import { fontVariables } from "@/lib/fonts";
+import { openGraphBase, twitterBase } from "@/lib/metadata";
 import { DEFAULT_THEME } from "@/lib/themes/themes";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Tio Dog Barbearia",
-  description: "Sistema de gestão para barbearias",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
+  description: APP_DESCRIPTION,
+  applicationName: APP_NAME,
+  keywords: [
+    "barbearia",
+    "gestão de barbearia",
+    "agenda de barbearia",
+    "agendamento",
+    "sistema para barbearia",
+  ],
   icons: {
     icon: "/logo.png",
+    apple: "/logo.png",
   },
+  openGraph: {
+    ...openGraphBase,
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    url: "/",
+  },
+  twitter: {
+    ...twitterBase,
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
 
 export default async function RootLayout({
