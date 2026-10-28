@@ -7,6 +7,8 @@
 @import "./themes.css";
 
 :root {
+    --radius: 0.5rem;
+
     --background: oklch(0.98 0.004 265);       
     --foreground: oklch(0.18 0.010 265);     
 
