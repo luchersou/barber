@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import React from "react";
 
@@ -5,6 +6,14 @@ import { SiteHeader } from "@/components/layout/header";
 import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
 import { SidebarInset,SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+
+// Private area behind authentication: keep it out of search results
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function DashboardLayout({
   children,

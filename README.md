@@ -2,7 +2,7 @@
 
 > A modern barbershop management SaaS built with Next.js 16, focused on appointment scheduling, revenue tracking, and client management.
 
-🔗 **Live Demo:** [barber-orcin-two.vercel.app](barber-orcin-two.vercel.app)
+🔗 **Live Demo:** [barber-orcin-two.vercel.app](https://barber-orcin-two.vercel.app)
 
 ---
 

@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 
 import { CalendarSkeleton } from "@/components/shared/skeletons/calendar-skeleton";
 
 import { EventCalendarAppServer } from "./_components/calendar/event-calendar-app";
+
+export const metadata: Metadata = {
+  title: "Agenda",
+};
 
 export default function AgendaPage() {
   return (
